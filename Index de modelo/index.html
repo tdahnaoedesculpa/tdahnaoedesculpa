@@ -1,0 +1,3804 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDAH não é desculpa - Espaço Viciante</title>
+
+    <!-- Ícones & Fontes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        :root {
+            --bg: #0a0f1e;
+            --card: #1a1f2e;
+            --primary: #00d4ff;
+            --primary-glow: #00d4ffaa;
+            --secondary: #ff6b9d;
+            --accent: #9d4edd;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --text: #f0f9ff;
+            --muted: #94a3b8;
+            --neon-glow: 0 0 20px var(--primary-glow);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding-top: 80px;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(0, 212, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(157, 78, 221, 0.05) 0%, transparent 20%);
+        }
+
+        /* 🎮 Efeitos Especiais */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes sparkle {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shine {
+            0% { background-position: -100px; }
+            100% { background-position: 200px; }
+        }
+
+        /* 🧠 Navegação Gamificada */
+        .nav-gamified {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 15, 30, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid var(--primary);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--neon-glow);
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: glow 2s infinite;
+        }
+
+        .nav-logo::after {
+            content: '✨';
+            animation: sparkle 1.5s infinite;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .xp-display {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .xp-display i {
+            color: var(--warning);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 15px;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 5px 15px var(--primary-glow);
+        }
+
+        .nav-link.active::after {
+            content: '🎯';
+            position: absolute;
+            right: -10px;
+            top: -5px;
+            font-size: 0.8rem;
+        }
+
+        /* 🎪 Header Épico */
+        .hero-epic {
+            padding: 6rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: -80px;
+            padding-top: 10rem;
+        }
+
+        .hero-epic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(157, 78, 221, 0.1) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title::after {
+            content: '⚡';
+            position: absolute;
+            right: -40px;
+            top: 0;
+            animation: sparkle 2s infinite;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--muted);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+        }
+
+        /* 🏆 Sistema de Gamificação */
+        .gamification-bar {
+            background: rgba(26, 31, 46, 0.9);
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: var(--neon-glow);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .stat-item i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-item p {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        /* 🎯 Seções Interativas */
+        .section-epic {
+            margin-bottom: 6rem;
+            scroll-margin-top: 120px;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        /* ESTILOS PARA MISSÕES */
+        .missao-card {
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.95), rgba(10, 15, 30, 0.95));
+            border: 2px solid var(--warning);
+            position: relative;
+        }
+
+        .missao-card.concluida {
+            border-color: var(--success);
+        }
+
+        .missao-card.em-progresso {
+            border-color: var(--primary);
+        }
+
+        .missao-badge {
+            background: linear-gradient(45deg, var(--warning), #f59e0b);
+            color: var(--bg);
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-weight: bold;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2;
+        }
+
+        .missao-badge.concluida {
+            background: linear-gradient(45deg, var(--success), #10b981);
+        }
+
+        .btn-completada {
+            background: rgba(74, 222, 128, 0.2) !important;
+            color: var(--success) !important;
+            border-color: var(--success) !important;
+            cursor: not-allowed;
+        }
+
+        /* Estilos para os botões de filtro */
+        .btn-filtro-ativo {
+            background: linear-gradient(45deg, var(--primary), var(--accent)) !important;
+            color: white !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* 🎮 DICAS INTERATIVAS GAMIFICADAS */
+        .dicas-gamificadas-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            position: relative;
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.95), rgba(10, 15, 30, 0.95));
+            border-radius: 25px;
+            border: 3px solid var(--accent);
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(157, 78, 221, 0.3);
+        }
+
+        .dicas-header-gamificado {
+            background: linear-gradient(45deg, var(--accent), #6a11cb);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--warning);
+        }
+
+        .dicas-progresso {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dicas-progress-bar {
+            width: 200px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .dicas-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--warning), #ffd700);
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dicas-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shine 2s infinite;
+        }
+
+        .dicas-xp-badge {
+            background: rgba(255, 219, 102, 0.2);
+            border: 2px solid var(--warning);
+            color: var(--warning);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .dicas-stories-container {
+            padding: 2rem;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .story-gamificado {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .story-gamificado.active {
+            display: block;
+        }
+
+        .story-header-gamificado {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary);
+            position: relative;
+        }
+
+        .story-number-badge {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .story-title-gamificado {
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .story-categoria {
+            background: rgba(255, 107, 157, 0.2);
+            color: var(--secondary);
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .story-content-gamificado {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-content-gamificado::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--secondary));
+        }
+
+        .story-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            text-align: center;
+            max-width: 600px;
+            color: var(--text);
+        }
+
+        .story-recompensa {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(251, 191, 36, 0.2);
+            border: 2px solid var(--warning);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            color: var(--warning);
+        }
+
+        .dicas-controles-gamificado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dicas-indicadores-gamificado {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .indicador-gamificado {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .indicador-gamificado.active {
+            background: var(--accent);
+            transform: scale(1.3);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .indicador-gamificado.completed {
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .indicador-gamificado.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-story {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-story:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-story::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-story:hover::before {
+            left: 100%;
+        }
+
+        .btn-story:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .dicas-conquistas {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .conquista-badge {
+            background: rgba(157, 78, 221, 0.2);
+            border: 2px solid var(--accent);
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .conquista-badge.unlocked {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: var(--success);
+            color: var(--success);
+            animation: sparkle 1s ease-in-out;
+        }
+
+        .conquista-badge.unlocked .conquista-icon {
+            color: var(--warning);
+        }
+
+        /* Contêiner dos filtros */
+        .filtros-wrapper {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .filtros-wrapper span {
+            color: var(--muted);
+            margin-right: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* 🗣️ Depoimentos Gamificados */
+        .depoimentos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .depoimento-card-gamified {
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.9), rgba(10, 15, 30, 0.9));
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .depoimento-card-gamified::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--secondary));
+            border-radius: 22px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .depoimento-card-gamified:hover::before {
+            opacity: 1;
+        }
+
+        .depoimento-card-gamified:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .depoimento-header-gamified {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .depoimento-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin-right: 1rem;
+        }
+
+        .depoimento-info {
+            flex: 1;
+        }
+
+        .depoimento-nome-gamified {
+            color: var(--primary);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .depoimento-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .depoimento-likes {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .depoimento-likes:hover {
+            color: var(--secondary);
+        }
+
+        .depoimento-texto-gamified {
+            color: var(--text);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .depoimento-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        .btn-like, .btn-share {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-like:hover {
+            background: rgba(255, 107, 157, 0.2);
+            color: var(--secondary);
+        }
+
+        .btn-share:hover {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--primary);
+        }
+
+        /* 🎮 Dicas Interativas */
+        .dicas-grid-gamified {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .dica-card-gamified {
+            background: rgba(26, 31, 46, 0.9);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .dica-card-gamified::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            border-radius: 22px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .dica-card-gamified:hover::before {
+            opacity: 1;
+        }
+
+        .dica-card-gamified:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 0 20px 40px rgba(157, 78, 221, 0.3);
+        }
+
+        .dica-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(45deg, var(--warning), #f59e0b);
+            color: var(--bg);
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 2;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .dica-video-container {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #1a1f2e, #0a0f1e);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dica-video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(10, 15, 30, 0.8));
+        }
+
+        .dica-conteudo-gamified {
+            padding: 1.5rem;
+        }
+
+        .dica-titulo-gamified {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .dica-descricao-gamified {
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .dica-progress {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .dica-progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 3px;
+            width: 0;
+            transition: width 1s ease;
+        }
+
+        .dica-completed {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        /* ✍️ Formulário Gamificado */
+        .form-gamified {
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.9), rgba(10, 15, 30, 0.9));
+            padding: 3rem;
+            border-radius: 25px;
+            border: 2px solid var(--primary);
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-gamified::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(45deg, var(--primary), var(--accent), var(--secondary));
+        }
+
+        .form-group-gamified {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-label-gamified {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control-gamified {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            border-radius: 15px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-control-gamified:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        textarea.form-control-gamified {
+            min-height: 180px;
+            resize: vertical;
+        }
+
+        .char-counter-gamified {
+            text-align: right;
+            margin-top: 0.5rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .char-progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .char-progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* 🎮 Botões Gamificados */
+        .btn-epic {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 1.2rem 2.5rem;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-epic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-epic:hover::before {
+            left: 100%;
+        }
+
+        .btn-epic:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary-gamified {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 2px solid var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary-gamified:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        /* 🎵 Player de Música - ESTILOS DINÂMICOS */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 31, 46, 0.95);
+            padding: 1rem;
+            border-radius: 15px;
+            border: 2px solid var(--accent);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+
+        .music-player.minimized {
+            width: 60px;
+            height: 60px;
+            padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .music-player.minimized .music-info,
+        .music-player.minimized .music-controls,
+        .music-player.minimized .volume-controls {
+            display: none;
+        }
+
+        .music-player.minimized .mini-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .music-player:not(.minimized) .mini-toggle {
+            display: none;
+        }
+
+        .music-info {
+            min-width: 180px;
+        }
+
+        .music-title {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .music-artist {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .music-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .volume-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            min-width: 120px;
+        }
+
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        .music-btn {
+            background: rgba(157, 78, 221, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-btn:hover {
+            background: rgba(157, 78, 221, 0.4);
+            transform: scale(1.1);
+        }
+
+        .mini-toggle {
+            display: none;
+        }
+
+        /* 🧠 MODAL DO QUIZ */
+        .quiz-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 30, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .quiz-container {
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.95), rgba(10, 15, 30, 0.95));
+            width: 100%;
+            max-width: 800px;
+            border-radius: 25px;
+            border: 3px solid var(--primary);
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .quiz-header {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .quiz-body {
+            padding: 2rem;
+        }
+
+        .quiz-question {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quiz-option:hover {
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid var(--primary);
+        }
+
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .result-category {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-close:hover {
+            background: rgba(255, 107, 157, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* 📱 Responsividade */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .nav-gamified {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .depoimentos-grid,
+            .dicas-grid-gamified {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding-top: 140px;
+            }
+
+            .hero-epic {
+                padding-top: 8rem;
+            }
+
+            .gamification-bar {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-gamified {
+                padding: 2rem;
+            }
+
+            .hero-title::after {
+                right: -30px;
+            }
+
+            .music-player:not(.minimized) {
+                flex-direction: column;
+                gap: 0.8rem;
+                padding: 1rem;
+                max-width: 200px;
+            }
+
+            .music-info {
+                min-width: auto;
+                text-align: center;
+            }
+
+            .volume-controls {
+                min-width: auto;
+            }
+
+            .dicas-gamificadas-container {
+                margin: 1rem;
+            }
+
+            .dicas-header-gamificado {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .dicas-progress-bar {
+                width: 150px;
+            }
+
+            .story-title-gamificado {
+                font-size: 1.5rem;
+            }
+
+            .story-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Estilos SweetAlert2 */
+        .swal-modal {
+            background-color: var(--card) !important;
+            border: 2px solid var(--primary) !important;
+            border-radius: 20px !important;
+        }
+        
+        .swal-title {
+            color: var(--text) !important;
+            font-size: 1.8rem !important;
+        }
+        
+        .swal-html-container {
+            color: var(--text) !important;
+        }
+        
+        .swal-confirm-button {
+            background: linear-gradient(45deg, var(--primary), var(--accent)) !important;
+            border: none !important;
+            border-radius: 10px !important;
+            padding: 0.8rem 2rem !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🎮 Barra de Progresso de Scroll -->
+<div class="scroll-progress" id="scroll-progress" style="position:fixed; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg, var(--primary), var(--accent)); transform:scaleX(0); transform-origin:left; z-index:9999;"></div>
+
+<!-- 🧠 Navegação Gamificada -->
+<nav class="nav-gamified">
+    <div class="nav-logo">
+        <i class="fas fa-brain"></i>
+        TDAH não é desculpa
+    </div>
+
+    <div class="nav-progress">
+        <div class="xp-display" id="xp-display">
+            <i class="fas fa-star"></i>
+            <span id="xp-count">1,250 XP</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="#sobre" class="nav-link" onclick="setActiveNav(this)">🏠 Início</a>
+            <a href="#depoimentos" class="nav-link" onclick="setActiveNav(this)">💬 Depoimentos</a>
+            <a href="#aprendizado" class="nav-link" onclick="setActiveNav(this)">🎯 Aprendizado</a>
+            <a href="#dicas" class="nav-link" onclick="setActiveNav(this)">💡 Dicas</a>
+            <a href="#podcast" class="nav-link" onclick="setActiveNav(this)">🎥 Podcasts</a>
+            <a href="#meditação guiada" class="nav-link" onclick="setActiveNav(this)">🧘‍♀️ Meditação Guiada</a>
+            <a href="#compartilhar" class="nav-link" onclick="setActiveNav(this)">✍️ Compartilhar</a>
+        </div>
+    </div>
+</nav>
+
+<!-- 🎪 Header Épico -->
+<header class="hero-epic">
+    <h1 class="hero-title">TDAH não é desculpa</h1>
+    <p class="hero-subtitle">Transforme seus desafios em superpoderes | Uma comunidade gamificada para mentes extraordinárias</p>
+
+    <div class="gamification-bar">
+        <div class="stats-grid">
+            <div class="stat-item" onclick="ganharXP(50)">
+                <i class="fas fa-fire"></i>
+                <h3 id="streak-count">7</h3>
+                <p>Dias consecutivos</p>
+            </div>
+            <div class="stat-item" onclick="mostrarConquistas()">
+                <i class="fas fa-trophy"></i>
+                <h3 id="achievement-count">12</h3>
+                <p>Conquistas</p>
+            </div>
+            <div class="stat-item" onclick="abrirSuperpoderesModal()">
+                <i class="fas fa-gamepad"></i>
+                <h3>Quiz</h3>
+                <p>Descubra seus poderes</p>
+            </div>
+            <div class="stat-item" onclick="compartilharProgresso()">
+                <i class="fas fa-users"></i>
+                <h3 id="community-count">1.2k</h3>
+                <p>Na comunidade</p>
+            </div>
+        </div>
+
+        <div class="xp-progress">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--primary); font-weight: 600;">Progresso do nível</span>
+                <span style="color: var(--muted);" id="xp-progress-text">750/2,000 XP</span>
+            </div>
+            <div style="height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; overflow: hidden;">
+                <div id="xp-progress-bar" style="height: 100%; background: linear-gradient(45deg, var(--primary), var(--accent)); width: 37.5%; border-radius: 5px; transition: width 1s ease;"></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main style="max-width: 1200px; margin: 0 auto; padding: 3rem 1.5rem;">
+
+    <!-- 🏠 Seção Sobre -->
+    <section id="sobre" class="section-epic">
+        <h2 class="section-title">
+            <i class="fas fa-brain-circuit" style="color: var(--primary);"></i>
+            Seu Cérebro É Incrível!
+        </h2>
+
+        <div style="background: linear-gradient(145deg, rgba(26, 31, 46, 0.9), rgba(10, 15, 30, 0.9)); padding: 2.5rem; border-radius: 20px; border: 2px solid rgba(0, 212, 255, 0.3);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <div style="background: rgba(0, 212, 255, 0.1); padding: 1.5rem; border-radius: 15px; border-left: 4px solid var(--primary); transition: transform 0.3s ease; cursor: pointer;"
+                     onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0, 212, 255, 0.2)'"
+                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    <h3 style="color: var(--primary); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-bolt"></i> Hiperfoco
+                    </h3>
+                    <p style="color: var(--text);">Seu superpoder de concentração total quando algo realmente te interessa!</p>
+                </div>
+
+                <div style="background: rgba(157, 78, 221, 0.1); padding: 1.5rem; border-radius: 15px; border-left: 4px solid var(--accent); transition: transform 0.3s ease; cursor: pointer;"
+                     onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(157, 78, 221, 0.2)'"
+                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    <h3 style="color: var(--accent); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-lightbulb"></i> Criatividade
+                    </h3>
+                    <p style="color: var(--text);">Pensamento fora da caixa e conexões únicas que ninguém mais faz!</p>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn-epic" onclick="abrirSuperpoderesModal()">
+                    <i class="fas fa-gamepad"></i> Descubra Seus Superpoderes!
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 💬 Depoimentos Gamificados -->
+    <section id="depoimentos" class="section-epic">
+        <h2 class="section-title">
+            <i class="fas fa-comments" style="color: var(--secondary);"></i>
+            Depoimentos da Comunidade
+            <span style="background: var(--secondary); color: white; padding: 0.3rem 0.8rem; border-radius: 10px; font-size: 1rem; margin-left: 1rem;">+1.2k</span>
+        </h2>
+
+        <div id="depoimentos-container" class="depoimentos-grid">
+            <!-- Depoimentos carregados via JavaScript -->
+        </div>
+
+        <div id="no-depoimentos" style="text-align: center; padding: 4rem; color: var(--muted); display: none;">
+            <i class="fas fa-comment-slash" style="font-size: 4rem; margin-bottom: 1.5rem; opacity: 0.5;"></i>
+            <h3 style="margin-bottom: 1rem;">Nenhum depoimento ainda</h3>
+            <p style="margin-bottom: 2rem;">Seja o pioneiro! Seu depoimento vale 100 XP!</p>
+            <button class="btn-epic" onclick="scrollToSection('compartilhar')">
+                <i class="fas fa-feather"></i> Ser o Primeiro!
+            </button>
+        </div>
+    </section>
+
+    <!-- 💡 DICAS INTERATIVAS GAMIFICADAS -->
+    <section id="dicas" class="section-epic">
+        <h2 class="section-title">
+            <i class="fas fa-lightbulb" style="color: var(--warning);"></i>
+            Dicas Interativas Gamificadas
+            <span style="background: var(--warning); color: var(--bg); padding: 0.3rem 0.8rem; border-radius: 10px; font-size: 1rem; margin-left: 1rem;">+25 XP por dica</span>
+        </h2>
+
+        <div class="dicas-gamificadas-container">
+            <div class="dicas-header-gamificado">
+                <div>
+                    <h3 style="color: white; font-size: 1.5rem; margin: 0;">
+                        <i class="fas fa-gamepad"></i> Jornada das Dicas
+                    </h3>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+                        Complete todas para desbloquear conquistas especiais!
+                    </p>
+                </div>
+                <div class="dicas-progresso">
+                    <div class="dicas-progress-bar">
+                        <div class="dicas-progress-fill" id="dicas-progress-fill"></div>
+                    </div>
+                    <div class="dicas-xp-badge" id="dicas-xp-badge">
+                        <i class="fas fa-star"></i>
+                        <span id="dicas-xp-contador">0/100 XP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dicas-stories-container">
+                <!-- Dica 1 -->
+                <div class="story-gamificado active" data-index="1">
+                    <div class="story-header-gamificado">
+                        <div class="story-number-badge">
+                            <i class="fas fa-1"></i> Dica #1
+                        </div>
+                        <h2 class="story-title-gamificado">
+                            Técnica Pomodoro para TDAH
+                            <span class="story-categoria">Produtividade</span>
+                        </h2>
+                    </div>
+                    
+                    <div class="story-content-gamificado">
+                        <div class="story-recompensa">
+                            <i class="fas fa-gem"></i> +25 XP
+                        </div>
+                        <p class="story-text">
+                            <strong>⏰ Trabalhe por 25 minutos</strong>, depois descanse 5 minutos.<br><br>
+                            <strong>🎯 Ajuste para seu ritmo:</strong> Se 25 minutos for muito, tente 15 minutos de trabalho + 5 de descanso.<br><br>
+                            <strong>✨ Dica extra:</strong> Use um timer físico - o clique ajuda a manter o foco!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dica 2 -->
+                <div class="story-gamificado" data-index="2">
+                    <div class="story-header-gamificado">
+                        <div class="story-number-badge">
+                            <i class="fas fa-2"></i> Dica #2
+                        </div>
+                        <h2 class="story-title-gamificado">
+                            Sistema de Recompensas Imediatas
+                            <span class="story-categoria">Motivação</span>
+                        </h2>
+                    </div>
+                    
+                    <div class="story-content-gamificado">
+                        <div class="story-recompensa">
+                            <i class="fas fa-gem"></i> +25 XP
+                        </div>
+                        <p class="story-text">
+                            <strong>🎁 Crie recompensas instantâneas:</strong> Após cada tarefa concluída, dê-se algo pequeno.<br><br>
+                            <strong>📊 Exemplo:</strong> "Se eu limpar minha mesa por 10 minutos, posso jogar 5 minutos do meu jogo favorito."<br><br>
+                            <strong>💡 O segredo:</strong> A recompensa deve vir IMEDIATAMENTE após a tarefa!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dica 3 -->
+                <div class="story-gamificado" data-index="3">
+                    <div class="story-header-gamificado">
+                        <div class="story-number-badge">
+                            <i class="fas fa-3"></i> Dica #3
+                        </div>
+                        <h2 class="story-title-gamificado">
+                            Listas Visuais Coloridas
+                            <span class="story-categoria">Organização</span>
+                        </h2>
+                    </div>
+                    
+                    <div class="story-content-gamificado">
+                        <div class="story-recompensa">
+                            <i class="fas fa-gem"></i> +25 XP
+                        </div>
+                        <p class="story-text">
+                            <strong>🌈 Use cores diferentes</strong> para diferentes tipos de tarefas.<br><br>
+                            <strong>🟢 VERDE:</strong> Trabalho/Estudo<br>
+                            <strong>🔵 AZUL:</strong> Cuidados pessoais<br>
+                            <strong>🟡 AMARELO:</strong> Lazer/Criatividade<br>
+                            <strong>🔴 VERMELHO:</strong> Urgente!<br><br>
+                            <strong>📱 Dica digital:</strong> Apps como Trello ou Notion com cores ajudam muito!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dica 4 -->
+                <div class="story-gamificado" data-index="4">
+                    <div class="story-header-gamificado">
+                        <div class="story-number-badge">
+                            <i class="fas fa-4"></i> Dica #4
+                        </div>
+                        <h2 class="story-title-gamificado">
+                            "Body Doubling" - Parceria de Produtividade
+                            <span class="routine" style="background: rgba(0, 212, 255, 0.2); color: var(--primary); padding: 0.3rem 1rem; border-radius: 15px; font-size: 0.9rem; font-weight: 600;">Rotina</span>
+                        </h2>
+                    </div>
+                    
+                    <div class="story-content-gamificado">
+                        <div class="story-recompensa">
+                            <i class="fas fa-gem"></i> +25 XP
+                        </div>
+                        <p class="story-text">
+                            <strong>👥 Trabalhe ao lado de alguém</strong> (mesmo virtualmente).<br><br>
+                            <strong>💻 Como fazer:</strong> 
+                            <ol style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;">
+                                <li>Combine com um amigo para trabalhar em chamada de vídeo</li>
+                                <li>Definam o que cada um vai fazer</li>
+                                <li>Trabalhem em silêncio por 25-50 minutos</li>
+                                <li>Compartilhem progressos no fim</li>
+                            </ol>
+                            <strong>✨ Resultado:</strong> Aumento de 300% na produtividade para muitos!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dicas-controles-gamificado">
+                <div class="dicas-indicadores-gamificado" id="dicas-indicadores">
+                    <!-- Indicadores serão gerados via JavaScript -->
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn-story" id="dica-anterior" onclick="navegarDica(-1)" disabled>
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button class="btn-story" id="dica-seguinte" onclick="navegarDica(1)">
+                        Próxima Dica <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="dicas-conquistas" id="dicas-conquistas">
+                <!-- Conquistas serão mostradas aqui -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 🎯 Aprendizado Interativas -->
+    <section id="aprendizado" class="section-epic">
+        <h2 class="section-title">
+            <i class="fas fa-graduation-cap" style="color: var(--accent);"></i>
+            Missões de Aprendizado
+            <span style="background: var(--accent); color: white; padding: 0.3rem 0.8rem; border-radius: 10px; font-size: 1rem; margin-left: 1rem;">+50 XP cada</span>
+            <button onclick="mostrarEstatisticasMissoes()" class="btn-secondary-gamified" style="margin-left: auto; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                <i class="fas fa-chart-bar"></i> Estatísticas
+            </button>
+        </h2>
+
+        <!-- BLOCO DOS FILTROS -->
+        <div class="filtros-wrapper">
+            <span>Filtrar:</span>
+            <!-- Os botões serão gerados pelo JavaScript -->
+            <div id="filtros-container"></div>
+        </div>
+
+        <div class="dicas-grid-gamified" id="dicas-container">
+            <!-- Dicas carregadas via JavaScript -->
+        </div>
+    </section>
+
+    <!-- 🎥 Seção de Podcasts -->
+    <section id="podcast" class="section-epic">
+        <h2 class="section-title">
+            <i class="fas fa-video" style="color: var(--secondary);"></i>
+            Podcasts Sobre TDAH
+        </h2>
+
+        <div class="dicas-grid-gamified">
+
+        <!-- Vídeo do Podcast - MODIFICADO 1 -->
+            <div class="dica-card-gamified">
+                <div class="dica-video-container" onclick="abrirVideo('CnsBqxiD2Ig')">
+                    <img src="https://img.youtube.com/vi/CnsBqxiD2Ig/maxresdefault.jpg" 
+             alt="Podcast TDAH" 
+                    style="width:100%; height:100%; object-fit:cover;">
+                    <div class="dica-video-overlay"></div>
+                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:3rem; color:white; background:rgba(0,0,0,0.5); padding:1rem; border-radius:50%;">
+                        <i class="fas fa-play"></i>
+                    </div>
+               </div>
+               <div class="dica-conteudo-gamified">
+                    <h3 class="dica-titulo-gamified">
+                        <i class="fas fa-podcast"></i> <!-- Ícone alterado para podcast -->
+                        Podcast: Estratégias para TDAH
+                    </h3>
+                    <p class="dica-descricao-gamified">Descubra técnicas e insights valiosos sobre produtividade com TDAH.</p>
+                </div>
+            </div>
+
+            <!-- Vídeo do Podcast - MODIFICADO 2 -->
+            <div class="dica-card-gamified">
+                <div class="dica-video-container" onclick="abrirVideo('xPc4aq3YmLA')">
+                    <img src="https://img.youtube.com/vi/xPc4aq3YmLA/maxresdefault.jpg" 
+                    alt="Podcast TDAH - Parte 2" 
+                    style="width:100%; height:100%; object-fit:cover;">
+                    <div class="dica-video-overlay"></div>
+                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:3rem; color:white; background:rgba(0,0,0,0.5); padding:1rem; border-radius:50%;">
+                        <i class="fas fa-play"></i>
+                    </div>
+               </div>
+               <div class="dica-conteudo-gamified">
+                     <h3 class="dica-titulo-gamified">
+                        <i class="fas fa-podcast"></i>
+                        Podcast: Avançando com TDAH
+                    </h3>
+                    <p class="dica-descricao-gamified">Estratégias avançadas para alta performance mesmo com TDAH.</p>
+                </div>
+            </div>
+
+           <!-- Vídeo do Podcast - MODIFICADO 3 -->          
+           <div class="dica-card-gamified">
+                <div class="dica-video-container" onclick="abrirVideo('-nZypwBe0eI')">
+                <img src="https://img.youtube.com/vi/-nZypwBe0eI/maxresdefault.jpg" alt="Produtividade com TDAH" style="width:100%; height:100%; object-fit:cover;">
+                    <div class="dica-video-overlay"></div>
+                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:3rem; color:white; background:rgba(0,0,0,0.5); padding:1rem; border-radius:50%;">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                <div class="dica-conteudo-gamified">
+                    <h3 class="dica-titulo-gamified">
+                        <i class="fas fa-podcast"></i>
+                        Lições importantes de VIDA
+                    </h3>
+                    <p class="dica-descricao-gamified">Métodos para alta performance mesmo com mente acelerada.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🧘‍♀️ Seção de Meditação Guiada -->
+    <section id="meditação guiada" class="section-epic">
+        <h2 class="section-title">
+            <i class="fas fa-spa" style="color: var(--primary);"></i>
+            Meditação Guiada para Foco e Calma
+        </h2>
+
+        <div style="background: linear-gradient(145deg, rgba(26, 31, 46, 0.9), rgba(10, 15, 30, 0.9)); padding: 2.5rem; border-radius: 20px; border: 2px solid rgba(0, 212, 255, 0.3); text-align: center;">
+            <p style="color: var(--text); font-size: 1.1rem; margin-bottom: 2rem;">
+                Encontre momentos de paz e foco com nossas meditações guiadas especialmente para mentes TDAH.
+            </p>
+            <button class="btn-epic" onclick="abrirVideo('dkg1N8-cFV8')">
+                <i class="fas fa-play-circle"></i> Iniciar Meditação
+            </button>
+        </div>
+    </section>
+
+    <!-- ✍️ Formulário Gamificado -->
+    <section id="compartilhar" class="section-epic">
+        <h2 class="section-title">
+            <i class="fas fa-feather-alt" style="color: var(--primary);"></i>
+            Ganhe 100 XP! Compartilhe Sua Jornada
+        </h2>
+
+        <div class="form-gamified" id="depoimento-form">
+            <div class="alert-success" id="success-alert" style="display: none; background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.3); color: var(--success); padding: 1.2rem; border-radius: 15px; margin-bottom: 2rem;">
+                <i class="fas fa-trophy"></i> <strong>+100 XP Ganhos!</strong> Seu depoimento foi publicado!
+            </div>
+
+            <div class="form-group-gamified">
+                <label class="form-label-gamified">
+                    <i class="fas fa-user-astronaut"></i> Seu nome ou apelido:
+                </label>
+                <input type="text" id="nome-depoimento" class="form-control-gamified"
+                       placeholder="Como quer ser chamado na comunidade? (opcional)"
+                       maxlength="30">
+            </div>
+
+            <div class="form-group-gamified">
+                <label class="form-label-gamified">
+                    <i class="fas fa-scroll"></i> Sua história épica:
+                </label>
+                <textarea id="mensagem-depoimento" class="form-control-gamified"
+                          placeholder="Compartilhe sua jornada com TDAH... Seus desafios, conquistas, descobertas! (mínimo 50 caracteres para ganhar XP)"
+                          maxlength="1500"
+                          oninput="atualizarContadorCaracteres()"></textarea>
+                <div class="char-counter-gamified">
+                    <span id="char-count">0/1500 caracteres</span>
+                    <span id="xp-preview" style="color: var(--warning); font-weight: 600;"></span>
+                </div>
+                <div class="char-progress">
+                    <div class="char-progress-bar" id="char-progress-bar"></div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn-epic" onclick="enviarDepoimentoGamificado()" id="btn-submit-depoimento">
+                    <i class="fas fa-rocket"></i> Publicar e Ganhar XP!
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- 🎵 Player de Música -->
+<div class="music-player minimized" id="music-player">
+    <div class="music-info">
+        <div class="music-title" id="current-track">Música para Foco</div>
+        <div class="music-artist" id="current-artist">Instrumental Relaxante</div>
+    </div>
+
+    <div class="music-controls">
+        <button class="music-btn" onclick="alternarMusica()" id="music-toggle">
+            <i class="fas fa-play"></i>
+        </button>
+        <button class="music-btn" onclick="proximaFaixa()">
+            <i class="fas fa-forward"></i>
+        </button>
+    </div>
+
+    <div class="volume-controls">
+        <button class="music-btn" onclick="ajustarVolume(-0.1)">
+            <i class="fas fa-volume-down"></i>
+        </button>
+        <input type="range" min="0" max="100" value="50" class="volume-slider" id="volume-slider" oninput="mudarVolume(this.value)">
+        <button class="music-btn" onclick="ajustarVolume(0.1)">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+
+    <div class="mini-toggle" onclick="alternarTamanhoPlayer()">
+        <i class="fas fa-headphones"></i>
+    </div>
+</div>
+
+<!-- 🧠 MODAL DO QUIZ -->
+<div id="quiz-modal" class="quiz-modal">
+    <div class="quiz-container">
+        <button class="quiz-close" onclick="fecharQuiz()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="quiz-header">
+            <h2 style="color: white; font-size: 2.5rem; margin-bottom: 1rem;">🧠 Descubra Seus Superpoderes TDAH</h2>
+            <p style="color: rgba(255,255,255,0.8);">Responda às perguntas para entender seu perfil e receber dicas personalizadas</p>
+        </div>
+
+        <div class="quiz-body">
+            <div id="quiz-questions">
+                <!-- Perguntas serão inseridas aqui via JavaScript -->
+            </div>
+
+            <div id="quiz-result" class="quiz-result" style="display: none;">
+                <!-- Resultado será mostrado aqui -->
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="btn-secondary-gamified" id="quiz-prev" onclick="quizAnterior()" style="display: none;">
+                    <i class="fas fa-arrow-left"></i> Anterior
+                </button>
+                <button class="btn-epic" id="quiz-next" onclick="quizProxima()">
+                    Próxima <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="btn-epic" id="quiz-submit" onclick="calcularResultadoAprimorado()" style="display: none;">
+                    <i class="fas fa-check-circle"></i> Ver Resultado
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ⚡ MODAL DE SUPER PODERES -->
+<div id="superpoderes-modal" class="quiz-modal" style="display: none;">
+    <div class="quiz-container">
+        <button class="quiz-close" onclick="fecharSuperpoderesModal()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="quiz-header">
+            <h2 style="color: white; font-size: 2.5rem; margin-bottom: 1rem;">⚡ Superpoderes TDAH</h2>
+            <p style="color: rgba(255,255,255,0.8);">Descubra os talentos únicos da mente neurodivergente</p>
+        </div>
+
+        <div class="quiz-body" style="max-height: 70vh; overflow-y: auto; padding: 2rem;">
+            <div class="superpoderes-grid">
+                <!-- Conteúdo será carregado aqui -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer style="text-align: center; padding: 4rem 1.5rem; color: var(--muted); border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 4rem; background: rgba(10, 15, 30, 0.8);">
+    <p style="margin-bottom: 1rem; font-size: 1.1rem;">🎮 <strong>TDAH não é desculpa</strong> - Transformando desafios em superpoderes</p>
+    <p style="font-size: 0.9rem; opacity: 0.7;">
+        <i class="fas fa-gamepad"></i> Site gamificado |
+        <i class="fas fa-shield-alt"></i> Espaço seguro |
+        <i class="fas fa-heart"></i> Feito com carinho
+    </p>
+</footer>
+
+<!-- Áudio para músicas -->
+<audio id="audio-player" loop></audio>
+
+<script>
+// ================ VARIÁVEIS GLOBAIS ================
+let quizPerguntas = [];
+let quizRespostas = [];
+let perguntaAtual = 0;
+let usuario = {
+    username: 'demo',
+    xp: 1250,
+    nivel: 5,
+    streak: 7,
+    avatar: "🧠"
+};
+
+// ================ SISTEMA DE DICAS INTERATIVAS GAMIFICADO ================
+const dicasInterativas = {
+    dicas: [
+        {
+            id: 1,
+            titulo: "Técnica Pomodoro para TDAH",
+            conteudo: "<strong>⏰ Trabalhe por 25 minutos</strong>, depois descanse 5 minutos.<br><br><strong>🎯 Ajuste para seu ritmo:</strong> Se 25 minutos for muito, tente 15 minutos de trabalho + 5 de descanso.<br><br><strong>✨ Dica extra:</strong> Use um timer físico - o clique ajuda a manter o foco!",
+            categoria: "Produtividade",
+            xp: 25,
+            concluida: false
+        },
+        {
+            id: 2,
+            titulo: "Sistema de Recompensas Imediatas",
+            conteudo: "<strong>🎁 Crie recompensas instantâneas:</strong> Após cada tarefa concluída, dê-se algo pequeno.<br><br><strong>📊 Exemplo:</strong> 'Se eu limpar minha mesa por 10 minutos, posso jogar 5 minutos do meu jogo favorito.'<br><br><strong>💡 O segredo:</strong> A recompensa deve vir IMEDIATAMENTE após a tarefa!",
+            categoria: "Motivação",
+            xp: 25,
+            concluida: false
+        },
+        {
+            id: 3,
+            titulo: "Listas Visuais Coloridas",
+            conteudo: "<strong>🌈 Use cores diferentes</strong> para diferentes tipos de tarefas.<br><br><strong>🟢 VERDE:</strong> Trabalho/Estudo<br><strong>🔵 AZUL:</strong> Cuidados pessoais<br><strong>🟡 AMARELO:</strong> Lazer/Criatividade<br><strong>🔴 VERMELHO:</strong> Urgente!<br><br><strong>📱 Dica digital:</strong> Apps como Trello ou Notion com cores ajudam muito!",
+            categoria: "Organização",
+            xp: 25,
+            concluida: false
+        },
+        {
+            id: 4,
+            titulo: "'Body Doubling' - Parceria de Produtividade",
+            conteudo: "<strong>👥 Trabalhe ao lado de alguém</strong> (mesmo virtualmente).<br><br><strong>💻 Como fazer:</strong> <ol style='text-align: left; margin: 1rem 0; padding-left: 1.5rem;'><li>Combine com um amigo para trabalhar em chamada de vídeo</li><li>Definam o que cada um vai fazer</li><li>Trabalhem em silêncio por 25-50 minutos</li><li>Compartilhem progressos no fim</li></ol><strong>✨ Resultado:</strong> Aumento de 300% na produtividade para muitos!",
+            categoria: "Rotina",
+            xp: 25,
+            concluida: false
+        }
+    ],
+    
+    dicaAtual: 0,
+    xpGanho: 0,
+    conquistas: [
+        { id: 1, nome: "Primeira Dica!", descricao: "Leu a primeira dica", xp: 10, icone: "🥇", desbloqueada: false },
+        { id: 2, nome: "Metade do Caminho", descricao: "Leu 2 dicas", xp: 25, icone: "🎯", desbloqueada: false },
+        { id: 3, nome: "Mestre das Dicas", descricao: "Completou todas as dicas", xp: 50, icone: "🏆", desbloqueada: false },
+        { id: 4, nome: "Rápido no Gatilho", descricao: "Completou todas as dicas em um dia", xp: 100, icone: "⚡", desbloqueada: false }
+    ],
+    
+    init() {
+        this.atualizarIndicadores();
+        this.atualizarInterface();
+        this.atualizarConquistas();
+        this.setupEventListeners();
+    },
+    
+    setupEventListeners() {
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') this.proximaDica();
+            if (e.key === 'ArrowLeft') this.dicaAnterior();
+        });
+        
+        // Swipe para mobile
+        this.setupSwipe();
+    },
+    
+    setupSwipe() {
+        const container = document.querySelector('.dicas-stories-container');
+        let startX = 0;
+        
+        container.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+        
+        container.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+            
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) this.proximaDica();
+                else this.dicaAnterior();
+            }
+        });
+    },
+    
+    proximaDica() {
+        if (this.dicaAtual < this.dicas.length - 1) {
+            this.marcarDicaConcluida();
+            this.dicaAtual++;
+            this.atualizarInterface();
+            
+            if (this.dicaAtual === this.dicas.length - 1) {
+                this.desbloquearConquista(3); // Mestre das Dicas
+            }
+        } else {
+            this.marcarDicaConcluida();
+            this.mostrarParabens();
+        }
+    },
+    
+    dicaAnterior() {
+        if (this.dicaAtual > 0) {
+            this.dicaAtual--;
+            this.atualizarInterface();
+        }
+    },
+    
+    marcarDicaConcluida() {
+        if (!this.dicas[this.dicaAtual].concluida) {
+            this.dicas[this.dicaAtual].concluida = true;
+            this.xpGanho += this.dicas[this.dicaAtual].xp;
+            
+            // Ganhar XP global
+            ganharXP(this.dicas[this.dicaAtual].xp);
+            
+            // Desbloquear conquistas
+            if (this.dicas.filter(d => d.concluida).length === 1) {
+                this.desbloquearConquista(0); // Primeira Dica
+            }
+            if (this.dicas.filter(d => d.concluida).length === 2) {
+                this.desbloquearConquista(1); // Metade do Caminho
+            }
+            
+            this.atualizarIndicadores();
+            this.atualizarInterface();
+            this.mostrarNotificacaoDica();
+        }
+    },
+    
+    desbloquearConquista(index) {
+        if (!this.conquistas[index].desbloqueada) {
+            this.conquistas[index].desbloqueada = true;
+            this.xpGanho += this.conquistas[index].xp;
+            ganharXP(this.conquistas[index].xp);
+            this.atualizarConquistas();
+            
+            mostrarNotificacao(`🏆 ${this.conquistas[index].nome} desbloqueada! +${this.conquistas[index].xp} XP`, 'sucesso');
+        }
+    },
+    
+    atualizarInterface() {
+        const dica = this.dicas[this.dicaAtual];
+        
+        // Atualizar todas as stories
+        document.querySelectorAll('.story-gamificado').forEach((story, index) => {
+            story.classList.toggle('active', index === this.dicaAtual);
+        });
+        
+        // Atualizar botões de navegação
+        document.getElementById('dica-anterior').disabled = this.dicaAtual === 0;
+        document.getElementById('dica-seguinte').innerHTML = 
+            this.dicaAtual === this.dicas.length - 1 ? 
+            'Completar Jornada <i class="fas fa-trophy"></i>' : 
+            'Próxima Dica <i class="fas fa-arrow-right"></i>';
+        
+        // Atualizar progresso
+        const progresso = (this.dicas.filter(d => d.concluida).length / this.dicas.length) * 100;
+        document.getElementById('dicas-progress-fill').style.width = `${progresso}%`;
+        
+        // Atualizar XP
+        document.getElementById('dicas-xp-contador').textContent = `${this.xpGanho}/${this.dicas.length * 25} XP`;
+    },
+    
+    atualizarIndicadores() {
+        const container = document.getElementById('dicas-indicadores');
+        container.innerHTML = '';
+        
+        this.dicas.forEach((dica, index) => {
+            const indicador = document.createElement('div');
+            indicador.className = `indicador-gamificado ${index === this.dicaAtual ? 'active' : ''} ${dica.concluida ? 'completed' : ''}`;
+            indicador.onclick = () => {
+                this.dicaAtual = index;
+                this.atualizarInterface();
+            };
+            container.appendChild(indicador);
+        });
+    },
+    
+    atualizarConquistas() {
+        const container = document.getElementById('dicas-conquistas');
+        if (!container) return;
+        
+        container.innerHTML = this.conquistas.map(conquista => `
+            <div class="conquista-badge ${conquista.desbloqueada ? 'unlocked' : ''}">
+                <span class="conquista-icon">${conquista.icone}</span>
+                <div>
+                    <div style="font-weight: bold;">${conquista.nome}</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;">${conquista.descricao}</div>
+                </div>
+                ${conquista.desbloqueada ? 
+                    `<div style="color: var(--warning); margin-left: auto;">
+                        <i class="fas fa-star"></i> ${conquista.xp}
+                    </div>` : 
+                    `<div style="opacity: 0.5; margin-left: auto;">
+                        <i class="fas fa-lock"></i>
+                    </div>`
+                }
+            </div>
+        `).join('');
+    },
+    
+    mostrarNotificacaoDica() {
+        const dica = this.dicas[this.dicaAtual];
+        mostrarNotificacao(`💡 Dica "${dica.titulo}" concluída! +${dica.xp} XP`, 'sucesso');
+        
+        // Criar confetes menores
+        criarConfetes(15);
+    },
+    
+    mostrarParabens() {
+        Swal.fire({
+            title: '🎉 Jornada Completa!',
+            html: `
+                <div style="text-align: center;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">Você completou todas as dicas!</h3>
+                    <p style="color: var(--text); margin-bottom: 1.5rem;">
+                        Total ganho: <strong style="color: var(--warning);">${this.xpGanho} XP</strong><br>
+                        Conquistas desbloqueadas: <strong>${this.conquistas.filter(c => c.desbloqueada).length}/4</strong>
+                    </p>
+                    <button onclick="reiniciarDicas()" 
+                            style="background: var(--accent); color: white; border: none; 
+                                   padding: 1rem 2rem; border-radius: 10px; font-weight: bold;
+                                   cursor: pointer; margin-top: 1rem;">
+                        <i class="fas fa-redo"></i> Recomeçar Jornada
+                    </button>
+                </div>
+            `,
+            background: 'var(--card)',
+            color: 'var(--text)',
+            showConfirmButton: false,
+            showCloseButton: true,
+            width: '500px'
+        });
+        
+        criarConfetes();
+    }
+};
+
+function navegarDica(direcao) {
+    if (direcao === 1) {
+        dicasInterativas.proximaDica();
+    } else {
+        dicasInterativas.dicaAnterior();
+    }
+}
+
+function reiniciarDicas() {
+    dicasInterativas.dicas.forEach(d => d.concluida = false);
+    dicasInterativas.conquistas.forEach(c => c.desbloqueada = false);
+    dicasInterativas.dicaAtual = 0;
+    dicasInterativas.xpGanho = 0;
+    dicasInterativas.init();
+    Swal.close();
+    mostrarNotificacao('Jornada de dicas reiniciada! Boa sorte! 🎮', 'sucesso');
+}
+
+// ================ DEPOIMENTOS ================
+let depoimentos = [
+    {
+        id: 1,
+        nome: "SuperFocado",
+        mensagem: "Descobri que meu hiperfoco é um superpoder! Hoje consigo canalizá-lo para projetos importantes.",
+        data: "Hoje",
+        likes: 42,
+        liked: false,
+        avatar: "🚀"
+    },
+    {
+        id: 2,
+        nome: "MenteCriativa",
+        mensagem: "Aceitar meu TDAH foi libertador. Agora uso minha criatividade explosiva como ferramenta profissional!",
+        data: "Ontem",
+        likes: 38,
+        liked: true,
+        avatar: "🎨"
+    },
+    {
+        id: 3,
+        nome: "NeuroDivergente",
+        mensagem: "Encontrei minha tribo aqui! Saber que não estou sozinho mudou tudo. Juntos somos mais fortes!",
+        data: "2 dias",
+        likes: 56,
+        liked: false,
+        avatar: "🧠"
+    }
+];
+
+// ================ MISSÕES ================
+const missoes = [
+    {
+        id: 1,
+        titulo: "Técnica Pomodoro Gamificada",
+        descricao: "Complete 4 sessões de 25 minutos e ganhe uma recompensa especial!",
+        progresso: 75,
+        youtubeId: "sEcD8FBr0I8",  
+        recompensa: 50,
+        duracao: "25 min",
+        dificuldade: "Média",
+        categoria: "Produtividade"
+    },
+    {
+        id: 2,
+        titulo: "Desafio de Organização",
+        descricao: "Organize um espaço por 15 minutos e registre seu progresso!",
+        progresso: 30,
+        youtubeId: "TDnWI7j5bG0",  
+        recompensa: 75,
+        duracao: "15 min",
+        dificuldade: "Fácil",
+        categoria: "Organização"
+    },
+    {
+        id: 3,
+        titulo: "Missão Mindfulness",
+        descricao: "Pratique 5 minutos de meditação guiada para acalmar a mente.",
+        progresso: 100,
+        youtubeId: "ssss7V1_eyA",
+        recompensa: 100,
+        duracao: "5 min",
+        dificuldade: "Fácil",
+        categoria: "Bem-estar"
+    },
+    {
+        id: 4,
+        titulo: "Gerenciamento Emocional",
+        descricao: "Assista ao vídeo e aplique uma técnica de regulação emocional hoje.",
+        progresso: 20,
+        youtubeId: "ael9d_Bn5ik",
+        recompensa: 60,
+        duracao: "20 min",
+        dificuldade: "Média",
+        categoria: "Bem-estar"
+    },
+    {
+        id: 5,
+        titulo: "Produtividade sem Culpa",
+        descricao: "Implemente uma estratégia de produtividade adaptada para TDAH.",
+        progresso: 50,
+        youtubeId: "9-3oJCLIazo",
+        recompensa: 70,
+        duracao: "30 min",
+        dificuldade: "Difícil",
+        categoria: "Produtividade"
+    },
+    {
+        id: 6,
+        titulo: "Mapa Mental Criativo",
+        descricao: "Crie um mapa mental para organizar seus pensamentos de forma visual.",
+        progresso: 0,
+        youtubeId: "BdYBQgR-Aec",
+        recompensa: 80,
+        duracao: "20 min",
+        dificuldade: "Média",
+        categoria: "Organização"
+    },
+    {
+        id: 7,
+        titulo: "Desafio da Rotina Matinal",
+        descricao: "Estabeleça uma rotina matinal de 3 passos por 3 dias seguidos.",
+        progresso: 0,
+        youtubeId: "p9_7VLrX9k8",
+        recompensa: 100,
+        duracao: "5 min/dia",
+        dificuldade: "Média",
+        categoria: "Rotinas"
+    },
+    {
+        id: 8,
+        titulo: "Sistema de Recompensas",
+        descricao: "Crie seu próprio sistema de recompensas para tarefas concluídas.",
+        progresso: 0,
+        youtubeId: "sVQqlKFnGso",
+        recompensa: 90,
+        duracao: "25 min",
+        dificuldade: "Média",
+        categoria: "Motivação"
+    },
+    {
+        id: 9,
+        titulo: "Luta Contra a Procrastinação",
+        descricao: "Use a regra dos 2 minutos para iniciar uma tarefa procrastinada.",
+        progresso: 0,
+        youtubeId: "Qvcx7Y4caQE",
+        recompensa: 60,
+        duracao: "2 min",
+        dificuldade: "Fácil",
+        categoria: "Produtividade"
+    },
+    {
+        id: 10,
+        titulo: "Diário das Conquistas",
+        descricao: "Registre 3 pequenas conquistas diárias por uma semana.",
+        progresso: 0,
+        youtubeId: "Xg2a8a_TTtI",
+        recompensa: 120,
+        duracao: "5 min/dia",
+        dificuldade: "Média",
+        categoria: "Motivação"
+    },
+    {
+        id: 11,
+        titulo: "Técnica do Time Blocking",
+        descricao: "Planeje seu dia usando blocos de tempo específicos.",
+        progresso: 0,
+        youtubeId: "i3b0H-8zHsc",
+        recompensa: 85,
+        duracao: "30 min",
+        dificuldade: "Média",
+        categoria: "Gestão do Tempo"
+    },
+    {
+        id: 12,
+        titulo: "Desintoxicação Digital",
+        descricao: "Passe 1 hora sem checar redes sociais ou notificações.",
+        progresso: 0,
+        youtubeId: "8lM0O8NHpTY",
+        recompensa: 70,
+        duracao: "60 min",
+        dificuldade: "Difícil",
+        categoria: "Foco"
+    },
+    {
+        id: 13,
+        titulo: "Exercício da Respiração 4-7-8",
+        descricao: "Pratique a técnica de respiração para acalmar a mente ansiosa.",
+        progresso: 0,
+        youtubeId: "gz4G31LGyog",
+        recompensa: 50,
+        duracao: "5 min",
+        dificuldade: "Fácil",
+        categoria: "Bem-estar"
+    },
+    {
+        id: 14,
+        titulo: "Organização do Espaço de Trabalho",
+        descricao: "Deixe seu ambiente de trabalho minimalista e funcional.",
+        progresso: 0,
+        youtubeId: "7H0dkxYUb6o",
+        recompensa: 95,
+        duracao: "45 min",
+        dificuldade: "Média",
+        categoria: "Organização"
+    },
+    {
+        id: 15,
+        titulo: "Planejamento de Prioridades",
+        descricao: "Use a matriz de Eisenhower para priorizar suas tarefas.",
+        progresso: 0,
+        youtubeId: "v6rd2Qd6Vgw",
+        recompensa: 110,
+        duracao: "40 min",
+        dificuldade: "Difícil",
+        categoria: "Gestão do Tempo"
+    }
+];
+
+// ================ SUPER PODERES TDAH ================
+const superpoderesInfo = [
+    {
+        icone: "🎯",
+        titulo: "Hiperfoco Intenso",
+        descricao: "Capacidade de concentração profunda em assuntos de interesse.",
+        pontosFortes: [
+            "Produtividade extraordinária quando motivado",
+            "Aprendizado acelerado em temas apaixonantes",
+            "Capacidade de resolver problemas complexos",
+            "Imersão total no trabalho criativo"
+        ],
+        dicas: [
+            "Use temporizadores para gerenciar o tempo",
+            "Alinhe tarefas com seus interesses",
+            "Aproveite os momentos de fluxo máximo"
+        ],
+        nivel: "Alto Potencial"
+    },
+    {
+        icone: "✨",
+        titulo: "Criatividade Explosiva",
+        descricao: "Pensamento divergente e conexões inovadoras.",
+        pontosFortes: [
+            "Solução criativa de problemas",
+            "Pensamento fora da caixa",
+            "Capacidade de ver múltiplas perspectivas",
+            "Inovação e originalidade"
+        ],
+        dicas: [
+            "Mantenha um diário de ideias",
+            "Faça brainstorming regularmente",
+            "Conecte conceitos aparentemente não relacionados"
+        ],
+        nivel: "Alto Potencial"
+    },
+    {
+        icone: "⚡",
+        titulo: "Pensamento Rápido",
+        descricao: "Processamento de informações em alta velocidade.",
+        pontosFortes: [
+            "Tomada de decisão rápida em crises",
+            "Processamento paralelo de informações",
+            "Adaptabilidade a mudanças",
+            "Respostas ágeis a estímulos"
+        ],
+        dicas: [
+            "Use listas para organizar pensamentos",
+            "Pratique meditação para clareza",
+            "Estabeleça prioridades claras"
+        ],
+        nivel: "Moderado-Alto"
+    },
+    {
+        icone: "🔗",
+        titulo: "Conexões Únicas",
+        descricao: "Habilidade de conectar ideias aparentemente não relacionadas.",
+        pontosFortes: [
+            "Pensamento associativo avançado",
+            "Metáforas e analogias criativas",
+            "Síntese de informações diversas",
+            "Visão holística de problemas"
+        ],
+        dicas: [
+            "Estude diferentes áreas do conhecimento",
+            "Pratique fazer analogias",
+            "Use mapas mentais"
+        ],
+        nivel: "Alto Potencial"
+    },
+    {
+        icone: "🎭",
+        titulo: "Empatia Aumentada",
+        descricao: "Sensibilidade emocional e compreensão profunda dos outros.",
+        pontosFortes: [
+            "Inteligência emocional elevada",
+            "Capacidade de leitura de pessoas",
+            "Sensibilidade a nuances sociais",
+            "Habilidade de mediação de conflitos"
+        ],
+        dicas: [
+            "Use sua empatia para liderança",
+            "Pratique limites saudáveis",
+            "Desenvolva habilidades de escuta ativa"
+        ],
+        nivel: "Moderado-Alto"
+    },
+    {
+        icone: "🚀",
+        titulo: "Energia e Entusiasmo",
+        descricao: "Vitalidade intensa e paixão por novos projetos.",
+        pontosFortes: [
+            "Motivação contagiante",
+            "Iniciativa em novos projetos",
+            "Resiliência e persistência",
+            "Capacidade de inspirar outros"
+        ],
+        dicas: [
+            "Canalize energia para metas específicas",
+            "Pratique exercícios regularmente",
+            "Estabeleça ciclos de trabalho-descanso"
+        ],
+        nivel: "Moderado"
+    }
+];
+
+// ================ QUIZ APRIMORADO ================
+const quizPerguntasAprimorado = [
+    {
+        pergunta: "1. Com que frequência você tem dificuldade em prestar atenção em detalhes ou comete erros por descuido no trabalho/escola?",
+        opcoes: [
+            { texto: "Nunca ou raramente", valor: 0 },
+            { texto: "Ocasionalmente", valor: 1 },
+            { texto: "Frequentemente", valor: 2 },
+            { texto: "Quase sempre", valor: 3 }
+        ],
+        tipo: "desatenção"
+    },
+    {
+        pergunta: "2. Como você lida com tarefas prolongadas que exigem esforço mental sustentado?",
+        opcoes: [
+            { texto: "Consigo manter o foco sem problemas", valor: 0 },
+            { texto: "Às vezes perco o interesse", valor: 1 },
+            { texto: "Tenho grande dificuldade", valor: 2 },
+            { texto: "É quase impossível para mim", valor: 3 }
+        ],
+        tipo: "desatenção"
+    },
+    {
+        pergunta: "3. Você frequentemente se sente inquieto ou tem dificuldade para ficar sentado quando necessário?",
+        opcoes: [
+            { texto: "Nunca", valor: 0 },
+            { texto: "Às vezes", valor: 1 },
+            { texto: "Frequentemente", valor: 2 },
+            { texto: "Constantemente", valor: 3 }
+        ],
+        tipo: "hiperatividade"
+    },
+    {
+        pergunta: "4. Como é sua capacidade de organização em tarefas e atividades?",
+        opcoes: [
+            { texto: "Sou muito organizado", valor: 0 },
+            { texto: "Tenho alguma dificuldade", valor: 1 },
+            { texto: "Tenho muita dificuldade", valor: 2 },
+            { texto: "Sou completamente desorganizado", valor: 3 }
+        ],
+        tipo: "desatenção"
+    },
+    {
+        pergunta: "5. Você frequentemente interrompe os outros ou se intromete em conversas?",
+        opcoes: [
+            { texto: "Nunca", valor: 0 },
+            { texto: "Raramente", valor: 1 },
+            { texto: "Frequentemente", valor: 2 },
+            { texto: "Quase sempre", valor: 3 }
+        ],
+        tipo: "hiperatividade"
+    },
+    {
+        pergunta: "6. Como você lida com a procrastinação de tarefas que exigem esforço mental?",
+        opcoes: [
+            { texto: "Não procrastino", valor: 0 },
+            { texto: "Às vezes adio tarefas", valor: 1 },
+            { texto: "Frequentemente procrastino", valor: 2 },
+            { texto: "Sempre procrastino tarefas difíceis", valor: 3 }
+        ],
+        tipo: "desatenção"
+    },
+    {
+        pergunta: "7. Você frequentemente perde coisas necessárias para tarefas ou atividades?",
+        opcoes: [
+            { texto: "Nunca", valor: 0 },
+            { texto: "Ocasionalmente", valor: 1 },
+            { texto: "Frequentemente", valor: 2 },
+            { texto: "Quase sempre", valor: 3 }
+        ],
+        tipo: "desatenção"
+    },
+    {
+        pergunta: "8. Como é sua capacidade de esperar pela sua vez em situações sociais?",
+        opcoes: [
+            { texto: "Tenho muita paciência", valor: 0 },
+            { texto: "Às vezes fico impaciente", valor: 1 },
+            { texto: "Frequentemente fico impaciente", valor: 2 },
+            { texto: "É extremamente difícil esperar", valor: 3 }
+        ],
+        tipo: "hiperatividade"
+    },
+    {
+        pergunta: "9. Você sente que sua mente está constantemente 'em movimento', com muitos pensamentos simultâneos?",
+        opcoes: [
+            { texto: "Raramente", valor: 0 },
+            { texto: "Às vezes", valor: 1 },
+            { texto: "Frequentemente", valor: 2 },
+            { texto: "Constantemente", valor: 3 }
+        ],
+        tipo: "hiperatividade"
+    },
+    {
+        pergunta: "10. Como é sua consistência em manter rotinas e hábitos?",
+        opcoes: [
+            { texto: "Sou muito consistente", valor: 0 },
+            { texto: "Tenho alguma dificuldade", valor: 1 },
+            { texto: "Tenho grande dificuldade", valor: 2 },
+            { texto: "Não consigo manter rotinas", valor: 3 }
+        ],
+        tipo: "desatenção"
+    }
+];
+
+// ================ SISTEMA DE MÚSICA ================
+const playlist = [
+    {
+        title: "Foco Profundo",
+        artist: "Música Instrumental",
+        url: "musicas/foco1.mp3"
+    },
+    {
+        title: "Concentração Calma",
+        artist: "Som Ambiente",
+        url: "musicas/foco2.mp3"
+    },
+    {
+        title: "Fluxo Criativo",
+        artist: "Lo-Fi Relax",
+        url: "musicas/foco3.mp3"
+    },
+    {
+        title: "Tranquilidade Mental",
+        artist: "Piano Suave",
+        url: "musicas/foco4.mp3"
+    }
+
+];
+
+let musicaAtual = 0;
+let musicaTocando = false;
+let playerMinimizado = true;
+const audio = document.getElementById('audio-player');
+
+function alternarMusica() {
+    const btn = document.getElementById('music-toggle');
+    if (!musicaTocando) {
+        btn.innerHTML = '<i class="fas fa-pause"></i>';
+        musicaTocando = true;
+        atualizarInfoMusica();
+        mostrarNotificacao(`🎵 Tocando: ${playlist[musicaAtual].title}`, 'info');
+    } else {
+        audio.pause();
+        btn.innerHTML = '<i class="fas fa-play"></i>';
+        musicaTocando = false;
+        mostrarNotificacao('Música pausada', 'info');
+    }
+}
+
+function proximaFaixa() {
+    musicaAtual = (musicaAtual + 1) % playlist.length;
+    if (musicaTocando) {
+        audio.src = playlist[musicaAtual].url;
+        audio.play();
+    }
+    atualizarInfoMusica();
+    mostrarNotificacao(`▶️ Próxima: ${playlist[musicaAtual].title}`, 'info');
+}
+
+function mudarVolume(valor) {
+    audio.volume = valor / 100;
+}
+
+function ajustarVolume(valor) {
+    const novoVolume = Math.min(1, Math.max(0, audio.volume + valor));
+    audio.volume = novoVolume;
+    document.getElementById('volume-slider').value = novoVolume * 100;
+    mostrarNotificacao(`Volume: ${Math.round(novoVolume * 100)}%`, 'info');
+}
+
+function atualizarInfoMusica() {
+    document.getElementById('current-track').textContent = playlist[musicaAtual].title;
+    document.getElementById('current-artist').textContent = playlist[musicaAtual].artist;
+}
+
+function alternarTamanhoPlayer() {
+    const player = document.getElementById('music-player');
+    playerMinimizado = !playerMinimizado;
+    if (playerMinimizado) {
+        player.classList.add('minimized');
+    } else {
+        player.classList.remove('minimized');
+    }
+}
+
+// ================ FUNÇÕES DOS FILTROS ================
+function criarFiltrosDinamicos() {
+    const container = document.getElementById('filtros-container');
+    if (!container) return;
+    
+    // Botão "Todas"
+    const btnTodas = document.createElement('button');
+    btnTodas.className = 'btn-secondary-gamified';
+    btnTodas.style.cssText = 'font-size: 0.9rem; padding: 0.5rem 1rem;';
+    btnTodas.innerHTML = `<i class="fas fa-layer-group"></i> Todas (${missoes.length})`;
+    btnTodas.onclick = () => filtrarMissoes('todas');
+    container.appendChild(btnTodas);
+    
+    // Extrair categorias únicas
+    const categorias = [...new Set(missoes.map(m => m.categoria).filter(Boolean))];
+    
+    // Ícones para cada categoria
+    const iconesCategorias = {
+        'Produtividade': '🎯',
+        'Bem-estar': '🧘',
+        'Organização': '📊',
+        'Rotinas': '🔄',
+        'Motivação': '✨',
+        'Gestão do Tempo': '⏰',
+        'Foco': '🎯',
+        'Autoestima': '💖',
+        'Ambiente': '🖥️'
+    };
+    
+    // Criar botões para cada categoria
+    categorias.forEach(categoria => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-secondary-gamified';
+        btn.style.cssText = 'font-size: 0.9rem; padding: 0.5rem 1rem;';
+        btn.innerHTML = `${iconesCategorias[categoria] || '📝'} ${categoria}`;
+        btn.onclick = () => filtrarMissoes(categoria);
+        container.appendChild(btn);
+    });
+}
+
+function filtrarMissoes(categoria = 'todas') {
+    // Destacar botão ativo
+    document.querySelectorAll('#filtros-container button').forEach(btn => {
+        btn.classList.remove('btn-filtro-ativo');
+    });
+    
+    // Encontrar e destacar o botão clicado
+    const botoes = document.querySelectorAll('#filtros-container button');
+    botoes.forEach(btn => {
+        if (btn.textContent.includes(categoria) || 
+            (categoria === 'todas' && btn.textContent.includes('Todas'))) {
+            btn.classList.add('btn-filtro-ativo');
+        }
+    });
+    
+    const container = document.getElementById('dicas-container');
+    if (!container) return;
+    
+    let missoesFiltradas = missoes;
+    
+    if (categoria !== 'todas') {
+        missoesFiltradas = missoes.filter(missao => 
+            missao.categoria === categoria
+        );
+    }
+
+    container.innerHTML = '';
+    
+    missoesFiltradas.forEach(mission => {
+        const statusClass = mission.progresso >= 100 ? 'concluida' : 
+                          mission.progresso > 0 ? 'em-progresso' : '';
+        
+        const card = document.createElement('div');
+        card.className = `dica-card-gamified missao-card ${statusClass}`;
+
+        card.innerHTML = `
+            <div class="missao-badge ${mission.progresso >= 100 ? 'concluida' : ''}">
+                ${mission.progresso >= 100 ? '✅ Concluída' : '🎯 Missão'}
+            </div>
+            
+            <div class="dica-video-container" onclick="abrirVideo('${mission.youtubeId}')">
+                <img src="https://img.youtube.com/vi/${mission.youtubeId}/maxresdefault.jpg" 
+                     alt="${mission.titulo}" 
+                     style="width:100%; height:100%; object-fit:cover;">
+                <div class="dica-video-overlay"></div>
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); 
+                            font-size:3rem; color:white; background:rgba(0,0,0,0.5); 
+                            padding:1rem; border-radius:50%;">
+                    <i class="fas fa-play"></i>
+                </div>
+                ${mission.progresso >= 100 ? 
+                    `<div style="position:absolute; top:10px; left:10px; background:var(--success); 
+                               color:white; padding:0.3rem 0.8rem; border-radius:10px; font-size:0.8rem;">
+                        <i class="fas fa-check"></i> Concluído
+                    </div>` : ''}
+            </div>
+            
+            <div class="dica-conteudo-gamified">
+                <h3 class="dica-titulo-gamified">
+                    <i class="fas fa-${mission.progresso >= 100 ? 'check-circle' : 'quest'}"></i>
+                    ${mission.titulo}
+                </h3>
+                
+                <p class="dica-descricao-gamified">${mission.descricao}</p>
+                
+                <div style="display: flex; justify-content: space-between; margin: 1rem 0; 
+                           padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--muted);">Recompensa</div>
+                        <div style="color: var(--warning); font-weight: bold;">
+                            <i class="fas fa-star"></i> +${mission.recompensa} XP
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--muted);">Duração</div>
+                        <div style="color: var(--primary);">${mission.duracao}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--muted);">Categoria</div>
+                        <div style="color: var(--accent); font-size: 0.9rem;">${mission.categoria}</div>
+                    </div>
+                </div>
+                
+                <div class="dica-progress">
+                    <div class="dica-progress-bar" style="width: ${mission.progresso}%"></div>
+                </div>
+                
+                <div class="dica-completed">
+                    <span>${mission.progresso}% completo</span>
+                    <span style="color: var(--warning);">
+                        <i class="fas fa-star"></i> +${mission.recompensa} XP
+                    </span>
+                </div>
+                
+                <button class="btn-secondary-gamified ${mission.progresso >= 100 ? 'btn-completada' : ''}" 
+                        style="width: 100%; margin-top: 1rem;"
+                        onclick="iniciarMissao(${mission.id})" 
+                        ${mission.progresso >= 100 ? 'disabled' : ''}>
+                    <i class="fas fa-${mission.progresso >= 100 ? 'check' : 'play'}"></i>
+                    ${mission.progresso >= 100 ? 'Missão Concluída!' : 
+                      mission.progresso > 0 ? 'Continuar Missão' : 'Iniciar Missão'}
+                </button>
+                
+                <button class="btn-epic" style="width: 100%; margin-top: 0.5rem;"
+                        onclick="verDetalhesMissao(${mission.id})">
+                    <i class="fas fa-info-circle"></i> Ver Detalhes
+                </button>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+function mostrarEstatisticasMissoes() {
+    const total = missoes.length;
+    const concluidas = missoes.filter(m => m.progresso >= 100).length;
+    const emProgresso = missoes.filter(m => m.progresso > 0 && m.progresso < 100).length;
+    const xpTotal = missoes.reduce((total, m) => total + m.recompensa, 0);
+    const xpGanho = missoes
+        .filter(m => m.progresso >= 100)
+        .reduce((total, m) => total + m.recompensa, 0);
+    
+    Swal.fire({
+        title: '📊 Estatísticas das Missões',
+        html: `
+            <div style="text-align: left;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="background: rgba(0, 212, 255, 0.1); padding: 1rem; border-radius: 10px;">
+                        <div style="font-size: 0.9rem; color: var(--muted);">Missões</div>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--primary);">
+                            ${concluidas}/${total}
+                        </div>
+                    </div>
+                    <div style="background: rgba(157, 78, 221, 0.1); padding: 1rem; border-radius: 10px;">
+                        <div style="font-size: 0.9rem; color: var(--muted);">XP Ganho</div>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">
+                            ${xpGanho}/${xpTotal}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--primary); margin-bottom: 0.8rem;">Progresso Geral</h4>
+                    <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-bottom: 0.5rem;">
+                        <div style="width: ${(concluidas/total)*100}%; height: 100%; background: linear-gradient(45deg, var(--primary), var(--accent)); border-radius: 5px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; color: var(--muted); font-size: 0.9rem;">
+                        <span>${Math.round((concluidas/total)*100)}% concluído</span>
+                        <span>${emProgresso} em andamento</span>
+                    </div>
+                </div>
+                
+                <button onclick="reiniciarTodasMissoes()" 
+                        style="background: var(--warning); color: var(--bg); width: 100%; 
+                               border: none; padding: 1rem; border-radius: 10px; 
+                               font-weight: bold; cursor: pointer; margin-top: 1rem;">
+                    <i class="fas fa-redo"></i> Reiniciar Todas as Missões
+                </button>
+            </div>
+        `,
+        background: 'var(--card)',
+        color: 'var(--text)',
+        width: '500px',
+        showConfirmButton: false,
+        showCloseButton: true
+    });
+}
+
+function reiniciarTodasMissoes() {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Isso resetará o progresso de todas as missões!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: 'var(--danger)',
+        cancelButtonColor: 'var(--muted)',
+        confirmButtonText: 'Sim, reiniciar!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            missoes.forEach(missao => {
+                missao.progresso = 0;
+            });
+            renderizarMissoes();
+            mostrarNotificacao('Todas as missões foram reiniciadas!', 'sucesso');
+        }
+    });
+}
+
+function renderizarMissoes() {
+    const container = document.getElementById('dicas-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    
+    missoes.forEach(mission => {
+        const statusClass = mission.progresso >= 100 ? 'concluida' : 
+                          mission.progresso > 0 ? 'em-progresso' : '';
+        
+        const card = document.createElement('div');
+        card.className = `dica-card-gamified missao-card ${statusClass}`;
+
+        card.innerHTML = `
+            <div class="missao-badge ${mission.progresso >= 100 ? 'concluida' : ''}">
+                ${mission.progresso >= 100 ? '✅ Concluída' : '🎯 Missão'}
+            </div>
+            
+            <div class="dica-video-container" onclick="abrirVideo('${mission.youtubeId}')">
+                <img src="https://img.youtube.com/vi/${mission.youtubeId}/maxresdefault.jpg" 
+                     alt="${mission.titulo}" 
+                     style="width:100%; height:100%; object-fit:cover;">
+                <div class="dica-video-overlay"></div>
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); 
+                            font-size:3rem; color:white; background:rgba(0,0,0,0.5); 
+                            padding:1rem; border-radius:50%;">
+                    <i class="fas fa-play"></i>
+                </div>
+                ${mission.progresso >= 100 ? 
+                    `<div style="position:absolute; top:10px; left:10px; background:var(--success); 
+                               color:white; padding:0.3rem 0.8rem; border-radius:10px; font-size:0.8rem;">
+                        <i class="fas fa-check"></i> Concluído
+                    </div>` : ''}
+            </div>
+            
+            <div class="dica-conteudo-gamified">
+                <h3 class="dica-titulo-gamified">
+                    <i class="fas fa-${mission.progresso >= 100 ? 'check-circle' : 'quest'}"></i>
+                    ${mission.titulo}
+                </h3>
+                
+                <p class="dica-descricao-gamified">${mission.descricao}</p>
+                
+                <div style="display: flex; justify-content: space-between; margin: 1rem 0; 
+                           padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--muted);">Recompensa</div>
+                        <div style="color: var(--warning); font-weight: bold;">
+                            <i class="fas fa-star"></i> +${mission.recompensa} XP
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--muted);">Duração</div>
+                        <div style="color: var(--primary);">${mission.duracao}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; color: var(--muted);">Categoria</div>
+                        <div style="color: var(--accent); font-size: 0.9rem;">${mission.categoria}</div>
+                    </div>
+                </div>
+                
+                <div class="dica-progress">
+                    <div class="dica-progress-bar" style="width: ${mission.progresso}%"></div>
+                </div>
+                
+                <div class="dica-completed">
+                    <span>${mission.progresso}% completo</span>
+                    <span style="color: var(--warning);">
+                        <i class="fas fa-star"></i> +${mission.recompensa} XP
+                    </span>
+                </div>
+                
+                <button class="btn-secondary-gamified ${mission.progresso >= 100 ? 'btn-completada' : ''}" 
+                        style="width: 100%; margin-top: 1rem;"
+                        onclick="iniciarMissao(${mission.id})" 
+                        ${mission.progresso >= 100 ? 'disabled' : ''}>
+                    <i class="fas fa-${mission.progresso >= 100 ? 'check' : 'play'}"></i>
+                    ${mission.progresso >= 100 ? 'Missão Concluída!' : 
+                      mission.progresso > 0 ? 'Continuar Missão' : 'Iniciar Missão'}
+                </button>
+                
+                <button class="btn-epic" style="width: 100%; margin-top: 0.5rem;"
+                        onclick="verDetalhesMissao(${mission.id})">
+                    <i class="fas fa-info-circle"></i> Ver Detalhes
+                </button>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+function iniciarMissao(id) {
+    const missao = missoes.find(m => m.id === id);
+    if (!missao || missao.progresso >= 100) return;
+
+    missao.progresso += 25;
+    if (missao.progresso > 100) missao.progresso = 100;
+
+    if (missao.progresso === 100) {
+        usuario.xp += missao.recompensa;
+        mostrarNotificacao(`Missão completa! +${missao.recompensa} XP`, 'sucesso');
+        criarConfetes(30);
+    } else {
+        mostrarNotificacao(`Progresso: ${missao.progresso}%`, 'info');
+    }
+
+    renderizarMissoes();
+    atualizarInterface();
+}
+
+// ================ FUNÇÕES DO QUIZ ================
+function iniciarQuiz() {
+    ganharXP(25);
+    quizRespostas = [];
+    perguntaAtual = 0;
+    quizPerguntas = quizPerguntasAprimorado;
+    
+    document.getElementById('quiz-modal').style.display = 'flex';
+    renderizarPergunta();
+}
+
+function fecharQuiz() {
+    document.getElementById('quiz-modal').style.display = 'none';
+}
+
+function renderizarPergunta() {
+    const container = document.getElementById('quiz-questions');
+    const pergunta = quizPerguntas[perguntaAtual];
+
+    container.innerHTML = `
+        <div class="quiz-question">
+            <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem;">${pergunta.pergunta}</h3>
+            <div class="quiz-options">
+                ${pergunta.opcoes.map((opcao, index) => `
+                    <div class="quiz-option ${quizRespostas[perguntaAtual] === index ? 'selected' : ''}"
+                         onclick="selecionarOpcao(${index})">
+                        <div style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid ${quizRespostas[perguntaAtual] === index ? 'var(--primary)' : 'var(--muted)'}; display: flex; align-items: center; justify-content: center;">
+                            ${quizRespostas[perguntaAtual] === index ? '✓' : ''}
+                        </div>
+                        <span>${opcao.texto}</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        <div style="text-align: center; color: var(--muted); margin-top: 1rem;">
+            Pergunta ${perguntaAtual + 1} de ${quizPerguntas.length}
+        </div>
+    `;
+
+    document.getElementById('quiz-prev').style.display = perguntaAtual > 0 ? 'flex' : 'none';
+    document.getElementById('quiz-next').style.display = perguntaAtual < quizPerguntas.length - 1 ? 'flex' : 'none';
+    document.getElementById('quiz-submit').style.display = perguntaAtual === quizPerguntas.length - 1 ? 'flex' : 'none';
+}
+
+function selecionarOpcao(index) {
+    quizRespostas[perguntaAtual] = index;
+    renderizarPergunta();
+}
+
+function quizAnterior() {
+    if (perguntaAtual > 0) {
+        perguntaAtual--;
+        renderizarPergunta();
+    }
+}
+
+function quizProxima() {
+    if (quizRespostas[perguntaAtual] === undefined) {
+        mostrarNotificacao('Por favor, selecione uma opção antes de continuar.', 'erro');
+        return;
+    }
+    if (perguntaAtual < quizPerguntas.length - 1) {
+        perguntaAtual++;
+        renderizarPergunta();
+    }
+}
+
+function calcularResultadoAprimorado() {
+    if (quizRespostas.length < quizPerguntas.length) {
+        mostrarNotificacao('Por favor, responda todas as perguntas.', 'erro');
+        return;
+    }
+
+    let pontuacaoDesatencao = 0;
+    let pontuacaoHiperatividade = 0;
+    let pontuacaoTotal = 0;
+
+    quizRespostas.forEach((respostaIndex, perguntaIndex) => {
+        const pergunta = quizPerguntas[perguntaIndex];
+        const pontos = pergunta.opcoes[respostaIndex].valor;
+        pontuacaoTotal += pontos;
+        if (pergunta.tipo === "desatenção") {
+            pontuacaoDesatencao += pontos;
+        } else {
+            pontuacaoHiperatividade += pontos;
+        }
+    });
+
+    let categoria, descricao, recomendacoes, superpoderesSugeridos;
+    const maxPontos = quizPerguntas.length * 3;
+    const percentual = (pontuacaoTotal / maxPontos) * 100;
+
+    if (percentual < 25) {
+        categoria = "Baixa Probabilidade de TDAH";
+        descricao = "Seus resultados sugerem que você tem poucos sintomas de TDAH. Suas características estão dentro do esperado para a população geral.";
+        recomendacoes = [
+            "Continue desenvolvendo suas estratégias de organização",
+            "Mantenha bons hábitos de estudo/trabalho",
+            "Pratique mindfulness para manter o equilíbrio"
+        ];
+        superpoderesSugeridos = ["Organização", "Consistência", "Foco Sustentado"];
+    } else if (percentual < 50) {
+        categoria = "Traços Leves de TDAH";
+        descricao = "Você apresenta alguns traços de TDAH que podem ser gerenciados com estratégias simples. Muitas pessoas bem-sucedidas têm este perfil.";
+        recomendacoes = [
+            "Experimente técnicas de gestão do tempo (Pomodoro)",
+            "Use listas de tarefas e lembretes",
+            "Estabeleça rotinas flexíveis",
+            "Considere coaching de produtividade"
+        ];
+        superpoderesSugeridos = ["Adaptabilidade", "Multitasking Leve", "Criatividade"];
+    } else if (percentual < 75) {
+        categoria = "Sintomas Moderados de TDAH";
+        descricao = "Você apresenta sintomas significativos de TDAH que podem impactar seu dia a dia. Estratégias específicas podem fazer grande diferença.";
+        recomendacoes = [
+            "Procure um psicólogo especializado",
+            "Implemente sistemas de organização estruturados",
+            "Considere terapia cognitivo-comportamental",
+            "Explore técnicas de manejo do TDAH"
+        ];
+        superpoderesSugeridos = ["Hiperfoco", "Criatividade", "Pensamento Rápido", "Empatia"];
+    } else {
+        categoria = "Sintomas Significativos de TDAH";
+        descricao = "Seus resultados sugerem sintomas significativos de TDAH. É altamente recomendável buscar avaliação profissional para diagnóstico adequado.";
+        recomendacoes = [
+            "Procure um psiquiatra ou neurologista",
+            "Considere avaliação neuropsicológica completa",
+            "Explore opções de tratamento (terapia, medicação)",
+            "Junte-se a grupos de apoio TDAH"
+        ];
+        superpoderesSugeridos = ["Hiperfoco Intenso", "Criatividade Explosiva", "Pensamento Associativo", "Energia", "Resiliência"];
+    }
+
+    const quizQuestions = document.getElementById('quiz-questions');
+    const quizResult = document.getElementById('quiz-result');
+    const navButtons = document.querySelector('.quiz-navigation');
+
+    quizQuestions.style.display = 'none';
+    navButtons.style.display = 'none';
+
+    let corCategoria = 'var(--primary)';
+    if (percentual < 25) corCategoria = 'var(--success)';
+    else if (percentual < 50) corCategoria = 'var(--warning)';
+    else if (percentual < 75) corCategoria = 'var(--danger)';
+    else corCategoria = 'var(--danger)';
+
+    quizResult.style.display = 'block';
+    quizResult.innerHTML = `
+        <div class="result-category" style="background: linear-gradient(45deg, ${corCategoria}, var(--accent));">
+            <h2 style="color: white; font-size: 2rem; margin-bottom: 0.5rem;">${categoria}</h2>
+            <p style="color: rgba(255,255,255,0.9);">Pontuação Total: ${pontuacaoTotal}/${maxPontos} (${Math.round(percentual)}%)</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+            <div style="background: rgba(0, 212, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                <h4 style="color: var(--primary); margin-bottom: 0.5rem;">Desatenção</h4>
+                <div style="font-size: 2rem; font-weight: bold; color: var(--text);">
+                    ${pontuacaoDesatencao}/18
+                </div>
+                <div style="height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 0.5rem; overflow: hidden;">
+                    <div style="width: ${(pontuacaoDesatencao/18)*100}%; height: 100%; background: var(--primary); border-radius: 3px;"></div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(157, 78, 221, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                <h4 style="color: var(--accent); margin-bottom: 0.5rem;">Hiperatividade</h4>
+                <div style="font-size: 2rem; font-weight: bold; color: var(--text);">
+                    ${pontuacaoHiperatividade}/12
+                </div>
+                <div style="height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 0.5rem; overflow: hidden;">
+                    <div style="width: ${(pontuacaoHiperatividade/12)*100}%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">📋 Interpretação dos Resultados</h3>
+            <p style="color: var(--text); line-height: 1.6;">${descricao}</p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem;">
+            <h3 style="color: var(--accent); margin-bottom: 1rem;">✨ Seus Superpoderes Sugeridos</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                ${superpoderesSugeridos.map(poder => `
+                    <span style="background: rgba(0, 212, 255, 0.1); color: var(--primary); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">
+                        ${poder}
+                    </span>
+                `).join('')}
+            </div>
+            <p style="color: var(--muted); margin-top: 1rem; font-size: 0.9rem;">
+                <a href="javascript:void(0)" onclick="fecharQuiz(); abrirSuperpoderesModal();" style="color: var(--primary); text-decoration: none;">
+                    <i class="fas fa-info-circle"></i> Saiba mais sobre cada superpoder
+                </a>
+            </p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">🎯 Recomendações Personalizadas</h3>
+            <ul style="color: var(--text); line-height: 1.8; padding-left: 1.5rem;">
+                ${recomendacoes.map(rec => `<li>${rec}</li>`).join('')}
+            </ul>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="btn-epic" onclick="compartilharResultadoAprimorado(${pontuacaoTotal}, '${categoria}')" style="margin-right: 1rem;">
+                <i class="fas fa-share"></i> Compartilhar Resultado
+            </button>
+            <button class="btn-secondary-gamified" onclick="reiniciarQuizAprimorado()">
+                <i class="fas fa-redo"></i> Refazer Teste
+            </button>
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(74, 222, 128, 0.1); border-radius: 15px; border: 1px solid rgba(74, 222, 128, 0.3);">
+            <h4 style="color: var(--success); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-info-circle"></i> Aviso Importante
+            </h4>
+            <p style="color: var(--text); font-size: 0.9rem;">
+                Este teste é uma ferramenta de triagem inicial baseada nos critérios do DSM-5. 
+                <strong>Não substitui diagnóstico profissional.</strong> 
+                Se suspeita de TDAH, consulte um psiquiatra ou neurologista para avaliação completa.
+            </p>
+        </div>
+    `;
+
+    quizResult.scrollIntoView({ behavior: 'smooth' });
+    ganharXP(150);
+}
+
+function reiniciarQuizAprimorado() {
+    const quizResult = document.getElementById('quiz-result');
+    const quizQuestions = document.getElementById('quiz-questions');
+    const navButtons = document.querySelector('.quiz-navigation');
+
+    quizResult.style.display = 'none';
+    quizQuestions.style.display = 'block';
+    navButtons.style.display = 'flex';
+    iniciarQuiz();
+}
+
+function compartilharResultadoAprimorado(pontuacao, categoria) {
+    const texto = `🧠 Meu resultado no Teste TDAH: ${categoria}\n\nDescubra seus superpoderes neurodivergentes também!\n#TDAH #Neurodiversidade #SuperpoderesCerebrais`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Meu Perfil TDAH',
+            text: texto,
+            url: window.location.href
+        });
+    } else {
+        navigator.clipboard.writeText(texto).then(() => {
+            mostrarNotificacao('Resultado copiado para a área de transferência!', 'sucesso');
+        });
+    }
+    
+    ganharXP(50);
+}
+
+// ================ FUNÇÕES DO MODAL DE SUPER PODERES ================
+function abrirSuperpoderesModal() {
+    document.getElementById('superpoderes-modal').style.display = 'flex';
+    carregarSuperpoderes();
+    ganharXP(10);
+}
+
+function fecharSuperpoderesModal() {
+    document.getElementById('superpoderes-modal').style.display = 'none';
+}
+
+function carregarSuperpoderes() {
+    const container = document.querySelector('.superpoderes-grid');
+    if (!container) return;
+
+    container.innerHTML = superpoderesInfo.map((poder, index) => `
+        <div class="poder-card" style="
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: fadeInUp 0.5s ease-out ${index * 0.1}s both;
+        " onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0, 212, 255, 0.2)'"
+        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+        onclick="mostrarDetalhesPoder(${index})">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2rem; animation: float 3s ease-in-out infinite;">${poder.icone}</div>
+                <div>
+                    <h3 style="color: var(--primary); margin-bottom: 0.3rem;">${poder.titulo}</h3>
+                    <p style="color: var(--muted); font-size: 0.9rem;">${poder.descricao}</p>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="background: rgba(0, 212, 255, 0.1); color: var(--primary); padding: 0.3rem 0.8rem; border-radius: 10px; font-size: 0.8rem;">
+                    ${poder.nivel}
+                </span>
+                <button style="background: transparent; border: none; color: var(--primary); cursor: pointer;">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+
+    container.innerHTML += `
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: var(--text); margin-bottom: 1.5rem;">🔍 Quer descobrir quais superpoderes você tem?</h3>
+            <button class="btn-epic" onclick="fecharSuperpoderesModal(); setTimeout(() => iniciarQuiz(), 300);" style="font-size: 1.1rem; padding: 1.2rem 2.5rem;">
+                <i class="fas fa-gamepad"></i> Fazer o Teste de Superpoderes
+            </button>
+            <p style="color: var(--muted); margin-top: 1rem; font-size: 0.9rem;">
+                +100 XP ao completar o teste!
+            </p>
+        </div>
+    `;
+}
+
+function mostrarDetalhesPoder(index) {
+    const poder = superpoderesInfo[index];
+    
+    Swal.fire({
+        title: `${poder.icone} ${poder.titulo}`,
+        html: `
+            <div style="text-align: left;">
+                <p style="color: var(--text); margin-bottom: 1.5rem; font-size: 1.1rem; line-height: 1.6;">${poder.descricao}</p>
+                
+                <div style="background: rgba(0, 212, 255, 0.1); padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <p style="color: var(--primary); margin: 0; font-weight: 600;">
+                        <i class="fas fa-chart-line"></i> Nível: ${poder.nivel}
+                    </p>
+                </div>
+                
+                <h4 style="color: var(--primary); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-star"></i> Pontos Fortes:
+                </h4>
+                <ul style="color: var(--text); margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                    ${poder.pontosFortes.map(item => `<li style="margin-bottom: 0.5rem;">${item}</li>`).join('')}
+                </ul>
+                
+                <h4 style="color: var(--accent); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-lightbulb"></i> Dicas para Potencializar:
+                </h4>
+                <ul style="color: var(--text); padding-left: 1.5rem;">
+                    ${poder.dicas.map(item => `<li style="margin-bottom: 0.5rem;">${item}</li>`).join('')}
+                </ul>
+            </div>
+        `,
+        background: 'var(--card)',
+        color: 'var(--text)',
+        confirmButtonColor: 'var(--primary)',
+        confirmButtonText: 'Entendi!',
+        width: '600px',
+        showCloseButton: true,
+        customClass: {
+            popup: 'swal-modal',
+            title: 'swal-title',
+            htmlContainer: 'swal-html-container'
+        }
+    });
+}
+
+// ================ FUNÇÕES DO SISTEMA GAMIFICADO ================
+function verDetalhesMissao(id) {
+    const missao = missoes.find(m => m.id === id);
+    if (!missao) return;
+    
+    Swal.fire({
+        title: `🎯 ${missao.titulo}`,
+        html: `
+            <div style="text-align: left;">
+                <p style="color: var(--text); margin-bottom: 1.5rem;">${missao.descricao}</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="background: rgba(0, 212, 255, 0.1); padding: 1rem; border-radius: 10px;">
+                        <div style="color: var(--muted); font-size: 0.9rem;">Recompensa</div>
+                        <div style="color: var(--warning); font-size: 1.5rem; font-weight: bold;">
+                            +${missao.recompensa} XP
+                        </div>
+                    </div>
+                    <div style="background: rgba(157, 78, 221, 0.1); padding: 1rem; border-radius: 10px;">
+                        <div style="color: var(--muted); font-size: 0.9rem;">Duração</div>
+                        <div style="color: var(--accent); font-size: 1.5rem; font-weight: bold;">
+                            ${missao.duracao}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--primary); margin-bottom: 0.5rem;">📋 Instruções:</h4>
+                    <ol style="color: var(--text); padding-left: 1.5rem;">
+                        <li>Assista ao vídeo explicativo</li>
+                        <li>Aplique a técnica por ${missao.duracao}</li>
+                        <li>Registre seu progresso</li>
+                        <li>Complete a missão para ganhar +${missao.recompensa} XP</li>
+                    </ol>
+                </div>
+                
+                <div style="text-align: center;">
+                    <button onclick="abrirVideo('${missao.youtubeId}')" 
+                            style="background: var(--primary); color: white; border: none; 
+                                   padding: 1rem 2rem; border-radius: 10px; font-weight: bold;
+                                   cursor: pointer; margin-right: 1rem;">
+                        <i class="fas fa-play"></i> Assistir Vídeo
+                    </button>
+                    <button onclick="iniciarMissao(${missao.id})" 
+                            style="background: var(--warning); color: var(--bg); border: none; 
+                                   padding: 1rem 2rem; border-radius: 10px; font-weight: bold;
+                                   cursor: pointer;">
+                        <i class="fas fa-play-circle"></i> Iniciar Missão
+                    </button>
+                </div>
+            </div>
+        `,
+        background: 'var(--card)',
+        color: 'var(--text)',
+        width: '600px',
+        showCloseButton: true,
+        showConfirmButton: false
+    });
+}
+
+function renderizarDepoimentos() {
+    const container = document.getElementById('depoimentos-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (depoimentos.length === 0) {
+        document.getElementById('no-depoimentos').style.display = 'block';
+        return;
+    }
+
+    document.getElementById('no-depoimentos').style.display = 'none';
+
+    depoimentos.forEach(depoimento => {
+        const card = document.createElement('div');
+        card.className = 'depoimento-card-gamified';
+        card.dataset.id = depoimento.id;
+
+        card.innerHTML = `
+            <div class="depoimento-header-gamified">
+                <div style="display: flex; align-items: center;">
+                    <div class="depoimento-avatar">${depoimento.avatar}</div>
+                    <div class="depoimento-info">
+                        <h3 class="depoimento-nome-gamified">${depoimento.nome}</h3>
+                        <div class="depoimento-meta">
+                            <span>${depoimento.data}</span>
+                            <span>•</span>
+                            <div class="depoimento-likes" onclick="curtirDepoimento(${depoimento.id})">
+                                <i class="fas fa-heart" style="color: ${depoimento.liked ? 'var(--secondary)' : 'var(--muted)'};"></i>
+                                <span>${depoimento.likes}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="depoimento-texto-gamified">${depoimento.mensagem}</p>
+            <div class="depoimento-actions">
+                <button class="btn-like" onclick="curtirDepoimento(${depoimento.id})">
+                    <i class="fas fa-heart" style="color: ${depoimento.liked ? 'var(--secondary)' : 'var(--muted)'};"></i>
+                    Curtir (${depoimento.likes})
+                </button>
+                <button class="btn-share" onclick="compartilharDepoimento(${depoimento.id})">
+                    <i class="fas fa-share"></i>
+                    Compartilhar
+                </button>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+function enviarDepoimentoGamificado() {
+    const nomeInput = document.getElementById('nome-depoimento');
+    const mensagemInput = document.getElementById('mensagem-depoimento');
+    const successAlert = document.getElementById('success-alert');
+
+    const nome = nomeInput ? nomeInput.value.trim() : 'Anônimo';
+    const mensagem = mensagemInput ? mensagemInput.value.trim() : '';
+
+    if (!mensagem) {
+        mostrarNotificacao('Por favor, escreva uma mensagem!', 'erro');
+        return;
+    }
+
+    if (mensagem.length < 10) {
+        mostrarNotificacao('Mínimo 10 caracteres para depoimento', 'erro');
+        return;
+    }
+
+    const novoDepoimento = {
+        id: Date.now(),
+        nome: nome,
+        mensagem: mensagem,
+        data: "Agora mesmo",
+        likes: 0,
+        liked: false,
+        avatar: getRandomEmoji()
+    };
+
+    depoimentos.unshift(novoDepoimento);
+    usuario.xp += 100;
+
+    successAlert.style.display = 'block';
+    successAlert.innerHTML = `<i class="fas fa-trophy"></i> <strong>+100 XP Ganhos!</strong> Seu depoimento foi publicado!`;
+
+    renderizarDepoimentos();
+    atualizarInterface();
+
+    if (nomeInput) nomeInput.value = '';
+    if (mensagemInput) mensagemInput.value = '';
+    atualizarContadorCaracteres();
+
+    criarConfetes(30);
+
+    setTimeout(() => {
+        successAlert.style.display = 'none';
+    }, 5000);
+}
+
+function curtirDepoimento(id) {
+    const depoimento = depoimentos.find(d => d.id === id);
+    if (!depoimento) return;
+
+    if (depoimento.liked) {
+        depoimento.likes--;
+        depoimento.liked = false;
+    } else {
+        depoimento.likes++;
+        depoimento.liked = true;
+        usuario.xp += 10;
+        mostrarNotificacao('Curtido! +10 XP', 'sucesso');
+    }
+
+    renderizarDepoimentos();
+    atualizarInterface();
+}
+
+function atualizarInterface() {
+    document.getElementById('xp-count').textContent = `${usuario.xp.toLocaleString()} XP`;
+    document.getElementById('streak-count').textContent = usuario.streak;
+
+    const xpProximoNivel = usuario.nivel * 500;
+    const xpNoNivel = usuario.xp % 500;
+    const progressoPercent = (xpNoNivel / xpProximoNivel) * 100;
+
+    const barraXP = document.getElementById('xp-progress-bar');
+    const textoXP = document.getElementById('xp-progress-text');
+
+    if (barraXP) barraXP.style.width = `${progressoPercent}%`;
+    if (textoXP) textoXP.textContent = `${xpNoNivel}/${xpProximoNivel} XP`;
+}
+
+function atualizarContadorCaracteres() {
+    const textarea = document.getElementById('mensagem-depoimento');
+    const contador = document.getElementById('char-count');
+    const previewXP = document.getElementById('xp-preview');
+    const barraProgresso = document.getElementById('char-progress-bar');
+
+    if (!textarea || !contador) return;
+
+    const quantidade = textarea.value.length;
+    contador.textContent = `${quantidade}/1500 caracteres`;
+
+    const progresso = (quantidade / 1500) * 100;
+    if (barraProgresso) barraProgresso.style.width = `${progresso}%`;
+
+    if (previewXP) {
+        if (quantidade >= 50) {
+            previewXP.textContent = '+100 XP garantidos!';
+            previewXP.style.color = 'var(--success)';
+        } else {
+            previewXP.textContent = `${50 - quantidade} caracteres para ganhar XP`;
+            previewXP.style.color = 'var(--warning)';
+        }
+    }
+}
+
+function ganharXP(quantidade) {
+    const xpAntigo = usuario.xp;
+    usuario.xp += quantidade;
+
+    const nivelAntigo = Math.floor(xpAntigo / 500);
+    const novoNivel = Math.floor(usuario.xp / 500);
+
+    if (novoNivel > nivelAntigo) {
+        usuario.nivel = novoNivel;
+        mostrarLevelUp();
+    }
+
+    atualizarInterface();
+    criarConfetes(20);
+    mostrarNotificacao(`+${quantidade} XP!`, 'sucesso');
+}
+
+function mostrarLevelUp() {
+    mostrarNotificacao(`🎉 Level Up! Agora você está no nível ${usuario.nivel}!`, 'sucesso');
+    criarConfetes(50);
+}
+
+function criarConfetes(quantidade = 30) {
+    const cores = ['#00d4ff', '#ff6b9d', '#9d4edd', '#4ade80', '#fbbf24'];
+
+    for (let i = 0; i < quantidade; i++) {
+        const confete = document.createElement('div');
+        confete.style.cssText = `
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: ${cores[Math.floor(Math.random() * cores.length)]};
+            border-radius: 50%;
+            top: -20px;
+            left: ${Math.random() * 100}vw;
+            z-index: 9998;
+            animation: fall ${Math.random() * 2 + 1}s linear forwards;
+        `;
+
+        document.body.appendChild(confete);
+        setTimeout(() => confete.remove(), 3000);
+    }
+}
+
+function mostrarNotificacao(mensagem, tipo = 'info') {
+    const notifAnterior = document.querySelector('.notificacao');
+    if (notifAnterior) notifAnterior.remove();
+
+    const notificacao = document.createElement('div');
+    notificacao.className = 'notificacao';
+    notificacao.innerHTML = `
+        <i class="fas fa-${tipo === 'sucesso' ? 'check-circle' : tipo === 'erro' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${mensagem}</span>
+    `;
+
+    notificacao.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        background: ${tipo === 'sucesso' ? 'var(--success)' : tipo === 'erro' ? 'var(--danger)' : 'var(--primary)'};
+        color: white;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        animation: slideInRight 0.3s ease;
+    `;
+
+    document.body.appendChild(notificacao);
+
+    setTimeout(() => {
+        notificacao.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => notificacao.remove(), 300);
+    }, 3000);
+}
+
+function getRandomEmoji() {
+    const emojis = ['🚀', '🎯', '🧠', '⚡', '🌟', '🎨', '💪', '🌈'];
+    return emojis[Math.floor(Math.random() * emojis.length)];
+}
+
+// ================ FUNÇÕES AUXILIARES ================
+function setActiveNav(elemento) {
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    elemento.classList.add('active');
+}
+
+function scrollToSection(sectionId) {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+    setActiveNav(document.querySelector(`[href="#${sectionId}"]`));
+}
+
+function abrirVideo(youtubeId) {
+    window.open(`https://www.youtube.com/watch?v=${youtubeId}`, '_blank');
+    ganharXP(10);
+}
+
+function compartilharProgresso() {
+    ganharXP(20);
+    mostrarNotificacao('Progresso compartilhado! +20 XP', 'sucesso');
+}
+
+function mostrarConquistas() {
+    mostrarNotificacao('Em desenvolvimento! 🏆', 'info');
+}
+
+function compartilharDepoimento(id) {
+    mostrarNotificacao('Depoimento compartilhado!', 'sucesso');
+}
+
+// ================ INICIALIZAÇÃO ================
+document.addEventListener('DOMContentLoaded', function() {
+    audio.volume = 0.5;
+    document.getElementById('volume-slider').value = 50;
+    
+    atualizarInterface();
+    renderizarDepoimentos();
+    renderizarMissoes();
+    criarFiltrosDinamicos();
+    dicasInterativas.init();
+    
+    const textarea = document.getElementById('mensagem-depoimento');
+    if (textarea) {
+        textarea.addEventListener('input', atualizarContadorCaracteres);
+    }
+    
+    const btnEnviar = document.getElementById('btn-submit-depoimento');
+    if (btnEnviar) {
+        btnEnviar.addEventListener('click', enviarDepoimentoGamificado);
+    }
+    
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            scrollToSection(targetId);
+        });
+    });
+    
+    window.addEventListener('scroll', function() {
+        const scrollProgress = document.getElementById('scroll-progress');
+        if (scrollProgress) {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            scrollProgress.style.transform = `scaleX(${progress / 100})`;
+        }
+    });
+    
+    setTimeout(() => {
+        mostrarNotificacao('Bem-vindo à comunidade TDAH! 🎮', 'sucesso');
+    }, 1500);
+});
+</script>
+</body>
+</html>

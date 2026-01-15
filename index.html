@@ -1,0 +1,3992 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDAH não é desculpa - Jornada Gamificada</title>
+
+    <!-- Meta tags SEO -->
+    <meta name="description" content="Jornada gamificada para descobrir e potencializar seus superpoderes TDAH. Sistema de XP, missões e comunidade.">
+    <meta name="keywords" content="TDAH, neurodiversidade, gamificação, superpoderes, produtividade, foco">
+    <meta name="author" content="TDAH não é desculpa">
+
+    <!-- Ícones & Fontes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        :root {
+            --bg: #0a0f1e;
+            --card: #1a1f2e;
+            --primary: #00d4ff;
+            --primary-glow: #00d4ffaa;
+            --secondary: #ff6b9d;
+            --accent: #9d4edd;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --text: #f0f9ff;
+            --muted: #94a3b8;
+            --neon-glow: 0 0 20px var(--primary-glow);
+            --header-bg: #0f172a;
+            --header-text: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        
+        /* 🎮 Efeitos Especiais */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes sparkle {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 🎵 Player de Música - MODIFICADO */
+        .music-player {
+           position: fixed;
+           bottom: 20px;
+           right: 20px;
+           background: var(--card-bg, rgba(30, 30, 46, 0.9));
+           border-radius: 12px;
+           padding: 15px;
+           width: 300px; /* Largura fixa */
+           max-width: 95vw; /* Responsivo */
+           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+           backdrop-filter: blur(10px);
+           border: 1px solid rgba(255, 255, 255, 0.1);
+           z-index: 1000;
+           overflow: hidden; 
+        }
+
+        .music-player.minimized {
+            width: 60px;
+            height: 60px;
+            padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+            overflow: hidden;
+            min-width: 60px;
+            max-width: 60px;
+        }
+
+        .music-player.minimized .music-info,
+        .music-player.minimized .music-controls,
+        .music-player.minimized .volume-controls {
+            display: none;
+        }
+
+        .music-player.minimized .mini-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .music-player-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .music-player:not(.minimized) .mini-toggle {
+            display: none;
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0; 
+        }
+
+        .music-title {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .music-artist {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .music-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap; 
+        }
+
+        .volume-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            max-width: 150px; 
+        }
+
+        .volume-slider {
+            width: 100%;
+            min-width: 80px;
+            max-width: 120px;
+       }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        .music-btn {
+            background: rgba(157, 78, 221, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-btn:hover {
+            background: rgba(157, 78, 221, 0.4);
+            transform: scale(1.1);
+        }
+
+        .mini-toggle {
+            display: none;
+        }
+
+        /* 🧠 Navegação Gamificada */
+        .nav-gamified {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 15, 30, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid var(--primary);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--neon-glow);
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: glow 2s infinite;
+        }
+
+        .nav-logo::after {
+            content: '✨';
+            animation: sparkle 1.5s infinite;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .xp-display {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 15px;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 5px 15px var(--primary-glow);
+        }
+
+        /* 🎪 Header Épico */
+        .hero-epic {
+            padding: 8rem 1.5rem 6rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-epic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(157, 78, 221, 0.1) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s infinite;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--muted);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+        }
+
+        /* 🏆 Sistema de Gamificação */
+        .gamification-bar {
+            background: rgba(26, 31, 46, 0.9);
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: var(--neon-glow);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+        }
+
+        /* 🎯 Seções */
+        .section-epic {
+            margin-bottom: 6rem;
+            scroll-margin-top: 120px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* 🎮 DICAS SIMPLES (não gamificadas) */
+        .dicas-simples {
+            background: rgba(26, 31, 46, 0.7);
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dica-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        /* 🏅 MISSÕES GAMIFICADAS */
+        .missoes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .missao-card {
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.95), rgba(10, 15, 30, 0.95));
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .missao-card.concluida {
+            border-color: var(--success);
+        }
+
+        .missao-card.em-progresso {
+            border-color: var(--warning);
+        }
+
+        .missao-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--warning);
+            color: var(--bg);
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .missao-badge.concluida {
+            background: var(--success);
+        }
+
+        .missao-conteudo {
+            padding: 1.5rem;
+        }
+
+        .missao-titulo {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .missao-descricao {
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .missao-progresso {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .missao-progresso-bar {
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .missao-recompensa {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 📋 FILTROS */
+        .filtros-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+        }
+
+        .btn-filtro {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: var(--text);
+            padding: 0.5rem 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-filtro.ativo {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 🎮 Botões Gamificados */
+        .btn-epic {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .btn-epic:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        /* 🧠 MODAIS */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 30, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-container {
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.95), rgba(10, 15, 30, 0.95));
+            width: 100%;
+            max-width: 600px;
+            border-radius: 25px;
+            border: 3px solid var(--primary);
+            overflow: hidden;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        /* 📱 Responsividade */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .nav-gamified {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .missoes-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .gamification-bar {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .music-player:not(.minimized) {
+                max-width: 90vw;
+                min-width: unset;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .volume-controls {
+                min-width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* 🏠 TELA DE LOGIN/CADASTRO - CORRIGIDA */
+        .auth-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--bg);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+        }
+
+        .auth-box {
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.95), rgba(10, 15, 30, 0.95));
+            padding: 3rem;
+            border-radius: 25px;
+            border: 3px solid var(--primary);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeInUp 0.5s ease;
+            margin: 0 auto;
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-subtitle {
+            color: var(--muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .auth-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .auth-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .auth-form {
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.8rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .auth-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .auth-action-btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .auth-footer {
+            margin-top: 2rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .esqueci-senha-link {
+            color: var(--primary);
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            display: inline-block;
+            text-decoration: underline;
+        }
+
+        .esqueci-senha-link:hover {
+            color: var(--accent);
+        }
+
+        /* Modal de Recuperação de Senha */
+        .recovery-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 15, 30, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .recovery-box {
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.95), rgba(10, 15, 30, 0.95));
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 3px solid var(--primary);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .recovery-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .recovery-subtitle {
+            color: var(--muted);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .recovery-input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.8rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .recovery-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .recovery-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .recovery-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .recovery-btn.primary {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .recovery-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .recovery-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .success-message {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* 🔐 Perfil do Usuário */
+        .perfil-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .perfil-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .perfil-dados {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .perfil-nome {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .perfil-nivel {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+             
+        /* CABEÇALHO ESTILO HOSTINGER */
+        .site-header {
+            background: var(--header-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--header-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link::after {
+            content: '▼';
+            font-size: 0.6rem;
+            margin-left: 0.3rem;
+            opacity: 0.7;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .language-selector {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--header-text);
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .account-btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .account-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* BANNER PROMOCIONAL */
+        .promo-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            padding: 2rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .promo-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .promo-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .promo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .promo-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .promo-price {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .promo-button {
+            background: white;
+            color: var(--accent);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .promo-button:hover {
+            transform: translateY(-3px);
+        }
+
+        /* CONTEÚDO PRINCIPAL - DUAS COLUNAS */
+        .main-content {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            min-height: 70vh;
+        }
+
+        /* COLUNA DA ESQUERDA - TEXTO SOBRE TDAH */
+        .info-column {
+            padding-right: 2rem;
+        }
+
+        .info-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .info-subtitle {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .info-text {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .feature-desc {
+            font-size: 0.95rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* COLUNA DA DIREITA - ÁREA DE LOGIN */
+        .auth-column {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+        }
+
+        .auth-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .auth-subtitle {
+            color: var(--muted);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .auth-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .auth-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .auth-form {
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 1rem;
+            margin: 0.8rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .auth-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+        }
+
+        .auth-action-btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .auth-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .avatar-selection {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+
+        .avatar-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-option:hover {
+            transform: scale(1.1);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .avatar-option.selecionado {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .auth-footer {
+            margin-top: 2rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* RODAPÉ */
+        .site-footer {
+            background: var(--header-bg);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        /* ANIMAÇÕES */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .info-column {
+                padding-right: 0;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .promo-title {
+                font-size: 2rem;
+            }
+            
+            .info-title {
+                font-size: 2.2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .auth-column {
+                padding: 2rem;
+            }
+            
+            .header-container {
+                flex-wrap: wrap;
+            }
+            
+            .user-actions {
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Modal de Recuperação de Senha */
+        .recovery-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 15, 30, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .recovery-box {
+            background: linear-gradient(145deg, rgba(26, 31, 46, 0.95), rgba(10, 15, 30, 0.95));
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 3px solid var(--primary);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .recovery-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .recovery-input {
+            width: 100%;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .recovery-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .recovery-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .recovery-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .recovery-btn.primary {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .recovery-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .success-message {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .esqueci-senha-link {
+            color: var(--primary);
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            display: inline-block;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- CABEÇALHO -->
+    <header class="site-header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                TDAH não é desculpa
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#jornada" class="nav-link">Início</a>
+                <a href="#sobre" class="nav-link">Sobre TDAH</a>
+                <a href="#beneficios" class="nav-link">Benefícios</a>
+                <a href="#comunidade" class="nav-link">Comunidade</a>
+                <a href="#suporte" class="nav-link">Suporte</a>
+            </nav>
+            
+            <div class="user-actions">
+                <select class="language-selector">
+                    <option>Português</option>
+                    <option>English</option>
+                    <option>Español</option>
+                </select>
+                <button class="account-btn" onclick="scrollToAuth()">Minha Jornada</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- BANNER PROMOCIONAL -->
+    <section class="promo-banner">
+        <div class="promo-content">
+            <div class="promo-tag">80% MAIS PRODUTIVIDADE</div>
+            <h1 class="promo-title">Descubra Seus Superpoderes TDAH</h1>
+            <p class="promo-subtitle">Transforme seus desafios em vantagens competitivas com nosso sistema gamificado</p>
+            <div class="promo-price">Gratuito • Sistema de XP • Comunidade</div>
+            <button class="promo-button" onclick="scrollToAuth()">
+                Começar Jornada Gratuita 🚀
+            </button>
+        </div>
+    </section>
+
+    <!-- CONTEÚDO PRINCIPAL - DUAS COLUNAS -->
+    <main class="main-content">
+        <!-- COLUNA ESQUERDA - TEXTO SOBRE TDAH -->
+        <div class="info-column">
+            <h1 class="info-title">TDAH na Fase Adulta: Desafios e Superpoderes</h1>
+            <p class="info-subtitle">Entenda como a neurodiversidade pode ser sua maior aliada</p>
+            
+            <div class="info-text">
+                O Transtorno do Déficit de Atenção com Hiperatividade (TDAH) na vida adulta não é um 
+                déficit - é uma forma diferente de processar o mundo. Mentes TDAH possuem capacidades 
+                extraordinárias que, quando compreendidas e direcionadas, se tornam superpoderes únicos.
+            </div>
+            
+            <div class="info-text">
+                <strong>Acessando este site, você terá uma experiência transformadora de organização 
+                de vida.</strong> Nosso sistema gamificado foi desenvolvido especificamente para mentes 
+                TDAH, utilizando estratégias que funcionam <em>com</em> sua neurodivergência - não <em>contra</em> ela.
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Sistema Gamificado</h3>
+                    <p class="feature-desc">Transforme tarefas em missões e ganhe XP por cada conquista</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">Superpoderes Identificados</h3>
+                    <p class="feature-desc">Descubra suas forças naturais com nosso quiz personalizado</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">🤝</div>
+                    <h3 class="feature-title">Comunidade Apoiadora</h3>
+                    <p class="feature-desc">Conecte-se com pessoas que entendem sua jornada</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Produtividade Adaptada</h3>
+                    <p class="feature-desc">Técnicas que funcionam para mentes aceleradas</p>
+                </div>
+            </div>
+            
+            <div class="info-text">
+                <strong>Benefícios que você terá:</strong> Controle sobre sua atenção, organização 
+                personalizada, aumento da autoestima, desenvolvimento de rotinas eficientes e 
+                descoberta de seus talentos naturais.
+            </div>
+        </div>
+
+        <!-- COLUNA DIREITA - ÁREA DE LOGIN/CADASTRO -->
+        <div class="auth-column">
+            <div id="auth-screen">
+                <h1 class="auth-title">Comece Sua Jornada 🎮</h1>
+                <p class="auth-subtitle">Entre ou crie sua conta para descobrir seus superpoderes</p>
+                
+                <div class="auth-buttons">
+                    <button class="auth-btn active" onclick="mostrarForm('login')">Já tenho conta</button>
+                    <button class="auth-btn" onclick="mostrarForm('register')">Novo aqui</button>
+                </div>
+                
+                <!-- Formulário de LOGIN -->
+                <div id="login-form" class="auth-form active">
+                    <input type="text" id="login-username" placeholder="Seu nome ou apelido">
+                    <input type="password" id="login-password" placeholder="Sua senha (opcional)">
+                    <button class="esqueci-senha-link" onclick="mostrarRecuperacaoSenha()">
+                        <i class="fas fa-key"></i> Esqueci minha senha
+                    </button>
+                    <button class="auth-action-btn" onclick="fazerLogin()">
+                        Entrar na Jornada 🚀
+                    </button>
+                </div>
+                
+                <!-- Formulário de CADASTRO -->
+                <div id="register-form" class="auth-form">
+                    <input type="text" id="register-username" placeholder="Escolha um nome">
+                    <input type="email" id="register-email" placeholder="Seu email (para recuperação)">
+                    <input type="password" id="register-password" placeholder="Crie uma senha (opcional)">
+                    
+                    <div class="avatar-selection">
+                        <div class="avatar-option selecionado" onclick="selecionarAvatar('🧠')">🧠</div>
+                        <div class="avatar-option" onclick="selecionarAvatar('🚀')">🚀</div>
+                        <div class="avatar-option" onclick="selecionarAvatar('⚡')">⚡</div>
+                        <div class="avatar-option" onclick="selecionarAvatar('🎯')">🎯</div>
+                        <div class="avatar-option" onclick="selecionarAvatar('🌟')">🌟</div>
+                    </div>
+                    
+                    <button class="auth-action-btn" onclick="criarConta()">
+                        Começar Jornada Gratuita 🎮
+                    </button>
+                </div>
+                
+                <p class="auth-footer">
+                    <i class="fas fa-lock"></i> Seus dados ficam salvos apenas no seu navegador
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>TDAH não é desculpa</h3>
+                <p style="color: var(--muted); margin-bottom: 1rem;">
+                    Jornada gamificada para potencializar superpoderes TDAH.
+                </p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Recursos</h3>
+                <ul class="footer-links">
+                    <li><a href="#jornada">Jornada Gamificada</a></li>
+                    <li><a href="#quiz">Quiz de Superpoderes</a></li>
+                    <li><a href="#missoes">Missões Diárias</a></li>
+                    <li><a href="#comunidade">Comunidade</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Suporte</h3>
+                <ul class="footer-links">
+                    <li><a href="#ajuda">Central de Ajuda</a></li>
+                    <li><a href="#faq">Perguntas Frequentes</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                    <li><a href="#privacidade">Privacidade</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Comunidade</h3>
+                <ul class="footer-links">
+                    <li><a href="#depoimentos">Depoimentos</a></li>
+                    <li><a href="#forum">Fórum</a></li>
+                    <li><a href="#eventos">Eventos</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2024 TDAH não é desculpa - Jornada Gamificada. Todos os direitos reservados.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+                Desenvolvido com ❤️ para a comunidade neurodiversa
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal de Recuperação de Senha -->
+    <div id="recovery-modal" class="recovery-modal">
+    <div class="recovery-box">
+        <h2 class="recovery-title">🔐 Recuperar Acesso</h2>
+        <p class="recovery-subtitle">Digite seu email para receber instruções de recuperação</p>
+        
+        <input type="email" id="recovery-email" class="recovery-input" placeholder="Seu email cadastrado">
+        
+        <div id="recovery-success" class="success-message" style="display: none;">
+            <i class="fas fa-check-circle"></i> Instruções geradas com sucesso!
+        </div>
+        
+        <div class="recovery-buttons">
+            <button class="recovery-btn secondary" onclick="fecharRecuperacao()">
+                Cancelar
+            </button>
+            <button class="recovery-btn primary" onclick="enviarEmailRecuperacao()">
+                <i class="fas fa-paper-plane"></i> Obter Instruções
+            </button>
+        </div>
+        
+        <p style="color: var(--muted); font-size: 0.8rem; margin-top: 1.5rem;">
+            <i class="fas fa-info-circle"></i> Você receberá instruções para acessar sua conta.
+        </p>
+        
+        <!-- Botão alternativo para teste rápido -->
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+            <button onclick="testarRecuperacaoRapida()" 
+                    style="background: transparent; border: 1px dashed var(--accent); 
+                           color: var(--accent); padding: 0.5rem 1rem; border-radius: 8px;
+                           cursor: pointer; font-size: 0.8rem; width: 100%;">
+                <i class="fas fa-bolt"></i> Teste Rápido (Preencher automaticamente)
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- SITE PRINCIPAL (inicialmente escondido) -->
+    <div id="main-site" style="display: none;">
+        <!-- 🎮 Barra de Progresso de Scroll -->
+        <div class="scroll-progress" id="scroll-progress" style="position:fixed; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg, var(--primary), var(--accent)); transform:scaleX(0); transform-origin:left; z-index:9999;"></div>
+
+        <!-- 🧠 Navegação Gamificada -->
+        <nav class="nav-gamified">
+            <div class="nav-logo">
+                <i class="fas fa-brain"></i>
+                TDAH não é desculpa
+            </div>
+
+            <div class="nav-progress">
+                <div class="perfil-info">
+                    <div class="perfil-avatar" id="perfil-avatar">🧠</div>
+                    <div class="perfil-dados">
+                        <div class="perfil-nome" id="perfil-nome">Jogador</div>
+                        <div class="perfil-nivel" id="perfil-nivel">Nível 1</div>
+                    </div>
+                </div>
+
+                <div class="xp-display" id="xp-display">
+                    <i class="fas fa-star"></i>
+                    <span id="xp-count">0 XP</span>
+                </div>
+
+                <div class="nav-links">
+                    <a href="#sobre" class="nav-link" onclick="setActiveNav(this)">🏠 Início</a>
+                    <a href="#jornada" class="nav-link" onclick="setActiveNav(this)">🎯 Jornada</a>
+                    <a href="#missoes" class="nav-link" onclick="setActiveNav(this)">⚡ Missões</a>
+                    <a href="#podcast" class="nav-link" onclick="setActiveNav(this)">🎧 Podcasts</a>
+                    <a href="#meditacao" class="nav-link" onclick="setActiveNav(this)">🧘‍♀️ Meditação</a>
+                    <a href="#compartilhar" class="nav-link" onclick="setActiveNav(this)">💬 Comunidade</a>
+                    <a href="javascript:void(0)" class="nav-link" onclick="fazerLogout(); return false;">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 🎪 Header Épico -->
+        <header class="hero-epic">
+            <h1 class="hero-title" id="hero-title-usuario">Descubra Seus Superpoderes TDAH</h1>
+            <p class="hero-subtitle">Transforme seus desafios em vantagens competitivas | Sistema gamificado de desenvolvimento pessoal</p>
+
+            <div class="gamification-bar" id="gamification-bar">
+                <!-- Será preenchido após o quiz -->
+            </div>
+        </header>
+
+        <main style="max-width: 1200px; margin: 0 auto; padding: 3rem 1.5rem;">
+            <!-- 🏠 Seção Sobre -->
+            <section id="sobre" class="section-epic">
+                <h2 class="section-title">
+                    <i class="fas fa-brain-circuit"></i>
+                    Bem-vindo, <span id="nome-usuario">Jogador</span>!
+                </h2>
+
+                <div class="dicas-simples">
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.5rem;">
+                        <i class="fas fa-lightbulb"></i> Dicas Rápidas para o Dia a Dia
+                    </h3>
+                    
+                    <div class="dica-item">
+                        <h4 style="color: var(--text); margin-bottom: 0.5rem;">⏰ Técnica Pomodoro Adaptada</h4>
+                        <p style="color: var(--muted);">Trabalhe por 25 minutos, descanse 5. Se for muito, tente 15/5.</p>
+                    </div>
+                    
+                    <div class="dica-item">
+                        <h4 style="color: var(--text); margin-bottom: 0.5rem;">🎯 Recompensas Imediatas</h4>
+                        <p style="color: var(--muted);">Após cada tarefa, dê-se algo pequeno que goste.</p>
+                    </div>
+                    
+                    <div class="dica-item">
+                        <h4 style="color: var(--text); margin-bottom: 0.5rem;">🌈 Listas Coloridas</h4>
+                        <p style="color: var(--muted);">Use cores para categorizar tarefas: verde= trabalho, azul= pessoal, etc.</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <button class="btn-epic" onclick="abrirQuizSuperpoderes()" id="btn-quiz">
+                        <i class="fas fa-gamepad"></i> Descobrir Meus Superpoderes TDAH
+                    </button>
+                    <p style="color: var(--muted); margin-top: 1rem; font-size: 0.9rem;">
+                        Complete o quiz para desbloquear sua jornada gamificada personalizada!
+                    </p>
+                </div>
+            </section>
+
+            <!-- 🎯 JORNADA PERSONALIZADA -->
+            <section id="jornada" class="section-epic" style="display: none;">
+                <h2 class="section-title">
+                    <i class="fas fa-map"></i>
+                    Sua Jornada Personalizada
+                    <span style="background: var(--primary); color: white; padding: 0.3rem 0.8rem; border-radius: 10px; font-size: 1rem; margin-left: 1rem;" id="tipo-tdah">Seu Perfil</span>
+                </h2>
+
+                <div style="background: linear-gradient(145deg, rgba(26, 31, 46, 0.9), rgba(10, 15, 30, 0.9)); padding: 2.5rem; border-radius: 20px; border: 2px solid var(--primary);">
+                    <div id="superpoderes-container">
+                        <!-- Superpoderes serão carregados aqui após o quiz -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <button class="btn-epic" onclick="iniciarJornadaGamificada()">
+                            <i class="fas fa-play-circle"></i> Iniciar Jornada Gamificada
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ⚡ MISSÕES GAMIFICADAS -->
+            <section id="missoes" class="section-epic" style="display: none;">
+                <h2 class="section-title">
+                    <i class="fas fa-gamepad"></i>
+                    Missões da Jornada
+                    <span style="background: var(--warning); color: var(--bg); padding: 0.3rem 0.8rem; border-radius: 10px; font-size: 1rem; margin-left: 1rem;">+XP</span>
+                </h2>
+
+                <div class="filtros-container" id="filtros-container">
+                    <!-- Filtros serão gerados dinamicamente -->
+                </div>
+
+                <div class="missoes-container" id="missoes-container">
+                    <!-- Missões serão carregadas aqui -->
+                </div>
+            </section>
+
+            <!-- 🎧 Seção de Podcasts -->
+            <section id="podcast" class="section-epic">
+                <h2 class="section-title">
+                    <i class="fas fa-podcast"></i>
+                    Podcasts para Aprendizado
+                </h2>
+
+                <div class="missoes-container">
+                    <!-- Podcast 1 com imagem -->
+                    <div class="missao-card" onclick="abrirVideo('CnsBqxiD2Ig')" style="cursor: pointer;">
+                        <div style="width: 100%; height: 200px; overflow: hidden; position: relative;">
+                            <img src="https://img.youtube.com/vi/CnsBqxiD2Ig/maxresdefault.jpg" 
+                                 alt="Podcast TDAH" 
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+                                       background: linear-gradient(to bottom, transparent, rgba(10, 15, 30, 0.8));">
+                            </div>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                       font-size: 3rem; color: white; background: rgba(0,0,0,0.5); 
+                                       padding: 1rem; border-radius: 50%;">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="missao-conteudo">
+                            <h3 class="missao-titulo">
+                                <i class="fas fa-podcast"></i> Estratégias para TDAH
+                            </h3>
+                            <p class="missao-descricao">Técnicas e insights valiosos sobre produtividade com TDAH.</p>
+                        </div>
+                    </div>
+
+                    <!-- Podcast 2 com imagem -->
+                    <div class="missao-card" onclick="abrirVideo('xPc4aq3YmLA')" style="cursor: pointer;">
+                        <div style="width: 100%; height: 200px; overflow: hidden; position: relative;">
+                            <img src="https://img.youtube.com/vi/xPc4aq3YmLA/maxresdefault.jpg" 
+                                 alt="Podcast TDAH - Parte 2" 
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+                                       background: linear-gradient(to bottom, transparent, rgba(10, 15, 30, 0.8));">
+                            </div>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                       font-size: 3rem; color: white; background: rgba(0,0,0,0.5); 
+                                       padding: 1rem; border-radius: 50%;">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="missao-conteudo">
+                            <h3 class="missao-titulo">
+                                <i class="fas fa-podcast"></i> Avançando com TDAH
+                            </h3>
+                            <p class="missao-descricao">Estratégias avançadas para alta performance.</p>
+                        </div>
+                    </div>
+
+                    <!-- Podcast 3 com imagem -->
+                    <div class="missao-card" onclick="abrirVideo('-nZypwBe0eI')" style="cursor: pointer;">
+                        <div style="width: 100%; height: 200px; overflow: hidden; position: relative;">
+                            <img src="https://img.youtube.com/vi/-nZypwBe0eI/maxresdefault.jpg" 
+                                 alt="Produtividade com TDAH" 
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+                                       background: linear-gradient(to bottom, transparent, rgba(10, 15, 30, 0.8));">
+                            </div>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                       font-size: 3rem; color: white; background: rgba(0,0,0,0.5); 
+                                       padding: 1rem; border-radius: 50%;">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="missao-conteudo">
+                            <h3 class="missao-titulo">
+                                <i class="fas fa-podcast"></i> Lições importantes de VIDA
+                            </h3>
+                            <p style="color: var(--muted);">Métodos para alta performance mesmo com mente acelerada.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🧘‍♀️ Seção de Meditação -->
+            <section id="meditacao" class="section-epic">
+                <h2 class="section-title">
+                    <i class="fas fa-spa"></i>
+                    Meditação Guiada
+                </h2>
+
+                <div style="background: linear-gradient(145deg, rgba(26, 31, 46, 0.9), rgba(10, 15, 30, 0.9)); padding: 2.5rem; border-radius: 20px; border: 2px solid var(--primary); text-align: center;">
+                    <p style="color: var(--text); font-size: 1.1rem; margin-bottom: 2rem;">
+                        Encontre momentos de paz e foco com meditações guiadas para mentes TDAH.
+                    </p>
+                    <button class="btn-epic" onclick="abrirVideo('dkg1N8-cFV8')">
+                        <i class="fas fa-play-circle"></i> Iniciar Meditação
+                    </button>
+                </div>
+            </section>
+
+            <!-- 💬 Comunidade - DEPOIMENTOS COMPLETOS -->
+            <section id="compartilhar" class="section-epic">
+                <h2 class="section-title">
+                    <i class="fas fa-users"></i>
+                    Compartilhe Sua Jornada
+                    <span style="background: var(--secondary); color: white; padding: 0.3rem 0.8rem; border-radius: 10px; font-size: 1rem; margin-left: 1rem;">+100 XP</span>
+                </h2>
+
+                <!-- 📊 SUA EVOLUÇÃO -->
+                <div style="background: linear-gradient(145deg, rgba(26, 31, 46, 0.9), rgba(10, 15, 30, 0.9)); 
+                            padding: 2.5rem; border-radius: 20px; border: 2px solid var(--primary); 
+                            margin-bottom: 3rem;">
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem;">
+                        <i class="fas fa-chart-line"></i> Sua Evolução na Jornada
+                    </h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                        <div style="background: rgba(0, 212, 255, 0.1); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary);" id="stats-nivel">Nível 1</div>
+                            <div style="color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem;">Sua Posição</div>
+                        </div>
+                        
+                        <div style="background: rgba(157, 78, 221, 0.1); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                            <div style="font-size: 2.5rem; font-weight: bold; color: var(--accent);" id="stats-xp">0 XP</div>
+                            <div style="color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem;">Pontos Conquistados</div>
+                        </div>
+                        
+                        <div style="background: rgba(255, 107, 157, 0.1); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                            <div style="font-size: 2.5rem; font-weight: bold; color: var(--secondary);" id="stats-missoes">0</div>
+                            <div style="color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem;">Missões Completas</div>
+                        </div>
+                        
+                        <div style="background: rgba(251, 191, 36, 0.1); padding: 1.5rem; border-radius: 15px; text-align: center;">
+                            <div style="font-size: 2.5rem; font-weight: bold; color: var(--warning);" id="stats-superpoder">-</div>
+                            <div style="color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem;">Seu Superpoder</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button class="btn-epic" onclick="compartilharEvolucao()">
+                            <i class="fas fa-share-alt"></i> Compartilhar Minha Evolução
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 📝 FORMULÁRIO DE DEPOIMENTO -->
+                <div style="background: linear-gradient(145deg, rgba(26, 31, 46, 0.9), rgba(10, 15, 30, 0.9)); 
+                            padding: 2.5rem; border-radius: 20px; border: 2px solid var(--accent);">
+                    
+                    <!-- ALERTA DE SUCESSO -->
+                    <div id="success-alert" style="display: none; background: rgba(74, 222, 128, 0.1); 
+                         border: 1px solid rgba(74, 222, 128, 0.3); color: var(--success); 
+                         padding: 1.2rem; border-radius: 15px; margin-bottom: 2rem;">
+                        <i class="fas fa-trophy"></i> <strong>+100 XP Ganhos!</strong> Seu depoimento foi publicado na comunidade!
+                    </div>
+                    
+                    <h3 style="color: var(--accent); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.8rem;">
+                        <i class="fas fa-feather-alt"></i> Conte Sua História para a Comunidade
+                    </h3>
+                    
+                    <!-- INFORMAÇÕES PESSOAIS -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                        <div>
+                            <label style="display: block; color: var(--primary); margin-bottom: 0.5rem; font-weight: 600;">
+                                <i class="fas fa-user"></i> Seu nome ou apelido:
+                            </label>
+                            <input type="text" id="depoimento-nome" class="login-input" 
+                                   placeholder="Seu nome (opcional)" 
+                                   style="width: 100%; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.2);">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; color: var(--primary); margin-bottom: 0.5rem; font-weight: 600;">
+                                <i class="fas fa-birthday-cake"></i> Sua idade:
+                            </label>
+                            
+                            <input type="number" id="depoimento-idade" class="login-input" 
+                                   placeholder="Sua idade (opcional)" 
+                                   min="10" max="100" 
+                                   style="width: 100%; background-color: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.2);">
+                        </div>
+                    </div>
+                    
+                    <!-- SEU SUPERPODER (se já descobriu) -->
+                    <div id="superpoder-depoimento" style="display: none; background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem;">
+                        <label style="display: block; color: var(--primary); margin-bottom: 0.8rem; font-weight: 600;">
+                            <i class="fas fa-star"></i> Seu Superpoder TDAH:
+                        </label>
+                        <div id="superpoder-tags">
+                            <!-- Superpoder será mostrado aqui -->
+                        </div>
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-top: 0.8rem;">
+                            <i class="fas fa-info-circle"></i> Este superpoder será incluído no seu depoimento
+                        </p>
+                    </div>
+                    
+                    <!-- MENSAGEM DO DEPOIMENTO -->
+                    <div>
+                        <label style="display: block; color: var(--primary); margin-bottom: 0.8rem; font-weight: 600;">
+                            <i class="fas fa-scroll"></i> Seu depoimento:
+                        </label>
+                        <textarea id="depoimento-mensagem" class="login-input" 
+                                  placeholder="Compartilhe sua jornada com TDAH... Desafios, conquistas, descobertas, dicas!"
+                                  style="min-height: 150px; width: 100%; background-color: transparent; color: white;"
+                                  maxlength="2000"
+                                  oninput="atualizarContadorDepoimento()"></textarea>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.8rem;">
+                            <div style="color: var(--muted); font-size: 0.9rem;">
+                                <span id="depoimento-contador">0/2000 caracteres</span>
+                            </div>
+                            <div style="color: var(--warning); font-weight: 600; font-size: 0.9rem;" id="depoimento-xp">
+                                Escreva pelo menos 100 caracteres para ganhar XP
+                            </div>
+                        </div>
+                        
+                        <div style="height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; margin-top: 0.5rem; overflow: hidden;">
+                            <div id="depoimento-progresso" style="height: 100%; background: linear-gradient(45deg, var(--primary), var(--accent)); width: 0%; border-radius: 2px;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- BOTÕES -->
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                        <button class="btn-epic" onclick="enviarDepoimento()" style="flex: 1;">
+                            <i class="fas fa-paper-plane"></i> Publicar Depoimento
+                        </button>
+                        
+                        <button class="btn-filtro" onclick="visualizarDepoimento()" style="border-color: var(--warning);">
+                            <i class="fas fa-eye"></i> Visualizar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 📋 LISTA DE DEPOIMENTOS DA COMUNIDADE -->
+                <div id="depoimentos-container" style="margin-top: 4rem;">
+                    <h3 style="color: var(--text); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.8rem;">
+                        <i class="fas fa-comments"></i> Depoimentos da Comunidade
+                        <span style="background: var(--primary); color: white; padding: 0.2rem 0.8rem; border-radius: 10px; font-size: 0.9rem;">
+                            <span id="total-depoimentos">0</span> depoimentos
+                        </span>
+                    </h3>
+                    
+                    <div id="lista-depoimentos" style="display: grid; gap: 1.5rem;">
+                        <!-- Depoimentos serão carregados aqui -->
+                    </div>
+                    
+                    <div id="sem-depoimentos" style="text-align: center; padding: 4rem; color: var(--muted);">
+                        <i class="fas fa-comment-slash" style="font-size: 4rem; margin-bottom: 1.5rem; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 1rem;">Nenhum depoimento ainda</h3>
+                        <p style="margin-bottom: 2rem;">Seja o primeiro a compartilhar sua jornada!</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer style="text-align: center; padding: 4rem 1.5rem; color: var(--muted); border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 4rem; background: rgba(10, 15, 30, 0.8);">
+            <p style="margin-bottom: 1rem; font-size: 1.1rem;">🎮 <strong>TDAH não é desculpa</strong> - Jornada Gamificada</p>
+            <p style="font-size: 0.9rem; opacity: 0.7;">
+                <i class="fas fa-user-shield"></i> Seus dados são salvos localmente |
+                <i class="fas fa-gamepad"></i> Sistema de XP |
+                <i class="fas fa-heart"></i> Feito para a comunidade TDAH
+            </p>
+
+            <!-- 🎵 Player de Música -->
+            <div class="music-player minimized" id="music-player">
+                <div class="music-info">
+                    <div class="music-title" id="current-track">Música para Foco</div>
+                    <div class="music-artist" id="current-artist">Instrumental Relaxante</div>
+                </div>
+
+                <div class="music-controls">
+                    <button class="music-btn" onclick="alternarMusica()" id="music-toggle">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="music-btn" onclick="proximaFaixa()">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                </div>
+
+                <div class="volume-controls">
+                    <button class="music-btn" onclick="ajustarVolume(-0.1)">
+                        <i class="fas fa-volume-down"></i>
+                    </button>
+                    <input type="range" min="0" max="100" value="50" class="volume-slider" id="volume-slider" oninput="mudarVolume(this.value)">
+                    <button class="music-btn" onclick="ajustarVolume(0.1)">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+
+                <div class="mini-toggle" onclick="alternarTamanhoPlayer()">
+                    <i class="fas fa-headphones"></i>
+                </div>
+            </div>
+
+            <!-- Áudio para músicas -->
+            <audio id="audio-player" loop></audio>
+        </footer>
+    </div> <!-- Fim do main-site --> 
+
+    <!-- 🧠 MODAL DO QUIZ DE SUPER PODERES -->
+    <div id="quiz-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 style="color: white; font-size: 2rem;">🧠 Descubra Seus Superpoderes TDAH</h2>
+                <p style="color: rgba(255,255,255,0.8); margin-top: 0.5rem;">Responda 10 perguntas para personalizar sua jornada</p>
+
+                <button onclick="fecharQuiz()" 
+                        style="position: absolute; top: 20px; right: 20px; 
+                               background: rgba(255,255,255,0.2); border: none; 
+                               color: white; width: 40px; height: 40px; 
+                               border-radius: 50%; cursor: pointer; font-size: 1.2rem;">
+                    ✕
+                </button>
+            </div> 
+            
+            <div class="modal-body">
+                <div id="quiz-questions">
+                    <!-- Perguntas serão carregadas aqui -->
+                </div>
+                
+                <div id="quiz-result" style="display: none;">
+                    <!-- Resultado será mostrado aqui -->
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                    <button class="btn-filtro" id="quiz-prev" onclick="quizAnterior()" style="display: none;">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                    <button class="btn-epic" id="quiz-next" onclick="quizProxima()">
+                        Próxima <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn-epic" id="quiz-submit" onclick="finalizarQuiz()" style="display: none;">
+                        <i class="fas fa-check-circle"></i> Ver Meus Superpoderes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================ CONSTANTES GLOBAIS ================
+        const USER_KEY = 'tdah_jornada_usuarios';
+        const CURRENT_USER_KEY = 'tdah_usuario_atual';
+
+        // ================ SISTEMA DE USUÁRIO ================
+        let usuario = {
+            logado: false,
+            nome: '',
+            email: '',
+            avatar: '🧠',
+            xp: 0,
+            nivel: 1,
+            superpoderes: [],
+            perfilTDAH: '',
+            quizCompleto: false,
+            missoesConcluidas: [],
+            dataCadastro: null
+        };
+
+        // ================ FUNÇÕES BÁSICAS ================
+        function scrollToAuth() {
+            document.querySelector('.auth-column').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+
+        function mostrarForm(tipo) {
+            // Atualizar botões
+            document.querySelectorAll('.auth-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Mostrar formulário correto
+            document.getElementById('login-form').classList.remove('active');
+            document.getElementById('register-form').classList.remove('active');
+            document.getElementById(tipo + '-form').classList.add('active');
+        }
+
+        function selecionarAvatar(emoji) {
+            document.querySelectorAll('.avatar-option').forEach(opt => {
+                opt.classList.remove('selecionado');
+            });
+            event.target.classList.add('selecionado');
+        }
+
+        function mostrarRecuperacaoSenha() {
+            document.getElementById('recovery-modal').style.display = 'flex';
+            document.getElementById('recovery-success').style.display = 'none';
+            document.getElementById('recovery-email').value = '';
+        }
+
+        function fecharRecuperacao() {
+            document.getElementById('recovery-modal').style.display = 'none';
+        }
+
+        function enviarEmailRecuperacao() {
+            const email = document.getElementById('recovery-email').value.trim().toLowerCase();
+            
+            if (!email || !email.includes('@')) {
+                mostrarNotificacao('Por favor, digite um email válido!', 'erro');
+                return;
+            }
+            
+            const usuarios = carregarUsuarios();
+            const usuarioEncontrado = usuarios.find(u => u.email === email);
+            
+            if (!usuarioEncontrado) {
+                mostrarNotificacao('Email não encontrado! Verifique se digitou corretamente.', 'erro');
+                return;
+            }
+            
+            // Mostrar tela de instruções (simulação)
+            fecharRecuperacao();
+            
+            Swal.fire({
+                title: '📧 Email de Recuperação Enviado!',
+                html: `
+                    <div style="text-align: left; max-width: 500px;">
+                        <div style="background: rgba(0, 212, 255, 0.1); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem;">
+                            <h4 style="color: var(--primary); margin-bottom: 1rem;">Instruções enviadas para: <strong>${email}</strong></h4>
+                            
+                            <p style="color: var(--text); margin-bottom: 1rem;">Para acessar sua conta <strong>${usuarioEncontrado.username}</strong>:</p>
+                            
+                            <ol style="color: var(--text); padding-left: 1.5rem; margin-bottom: 1.5rem;">
+                                <li style="margin-bottom: 0.5rem;">Volte para a tela de login</li>
+                                <li style="margin-bottom: 0.5rem;">Digite seu nome de usuário: <strong>${usuarioEncontrado.username}</strong></li>
+                                <li style="margin-bottom: 0.5rem;"><strong style="color: var(--warning);">DEIXE O CAMPO DE SENHA EM BRANCO</strong></li>
+                                <li style="margin-bottom: 0.5rem;">Clique em "Entrar na Jornada"</li>
+                            </ol>
+                            
+                            <div style="background: rgba(251, 191, 36, 0.1); padding: 1rem; border-radius: 10px; border-left: 4px solid var(--warning);">
+                                <p style="color: var(--warning); margin: 0; font-size: 0.9rem;">
+                                    <i class="fas fa-exclamation-triangle"></i> <strong>Importante:</strong> Você poderá criar uma nova senha depois, se quiser.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button onclick="preencherLoginComUsuario('${usuarioEncontrado.username}')" 
+                                    style="background: linear-gradient(45deg, var(--primary), var(--accent)); 
+                                           color: white; border: none; padding: 1rem 2rem; 
+                                           border-radius: 10px; font-weight: bold; cursor: pointer;">
+                                <i class="fas fa-sign-in-alt"></i> Ir para o Login
+                            </button>
+                        </div>
+                        
+                        <p style="color: var(--muted); font-size: 0.9rem; margin-top: 1.5rem; text-align: center;">
+                            <i class="fas fa-info-circle"></i> Em um sistema real, você receberia um email com um link para redefinir sua senha.
+                        </p>
+                    </div>
+                `,
+                background: 'var(--card)',
+                color: 'var(--text)',
+                showConfirmButton: false,
+                showCloseButton: true,
+                width: '600px'
+            });
+            
+            mostrarNotificacao('Instruções de recuperação geradas!', 'sucesso');
+        }
+
+        // ================ SISTEMA DE LOGIN/CADASTRO ================
+        function carregarUsuarios() {
+            const usuariosSalvos = localStorage.getItem(USER_KEY);
+            return usuariosSalvos ? JSON.parse(usuariosSalvos) : [];
+        }
+
+        function salvarUsuarios(usuarios) {
+            localStorage.setItem(USER_KEY, JSON.stringify(usuarios));
+        }
+
+        function criarConta() {
+            const username = document.getElementById('register-username').value.trim();
+            const email = document.getElementById('register-email').value.trim().toLowerCase();
+            const password = document.getElementById('register-password').value;
+            
+            if (!username) {
+                mostrarNotificacao('Por favor, escolha um nome ou apelido!', 'erro');
+                return;
+            }
+            
+            if (!email || !email.includes('@')) {
+                mostrarNotificacao('Por favor, digite um email válido para recuperação!', 'erro');
+                return;
+            }
+            
+            const usuarios = carregarUsuarios();
+            
+            // Verificar se usuário já existe
+            const usuarioExistente = usuarios.find(u => u.username === username);
+            if (usuarioExistente) {
+                const usarExistente = confirm(`Já existe um usuário chamado "${username}". Deseja fazer login em vez disso?`);
+                if (usarExistente) {
+                    mostrarForm('login');
+                    document.getElementById('login-username').value = username;
+                }
+                return;
+            }
+            
+            // Verificar se email já existe
+            const emailExistente = usuarios.find(u => u.email === email);
+            if (emailExistente) {
+                mostrarNotificacao('Este email já está cadastrado! Tente fazer login.', 'erro');
+                return;
+            }
+            
+            // Criar novo usuário
+            const novoUsuario = {
+                id: Date.now(), // ID único
+                username: username,
+                email: email,
+                avatar: '🧠',
+                password: password || '', // Senha opcional
+                dataCriacao: new Date().toISOString(),
+                xp: 0,
+                nivel: 1,
+                quizCompleto: false,
+                superpoderes: [],
+                missoesConcluidas: []
+            };
+            
+            usuarios.push(novoUsuario);
+            salvarUsuarios(usuarios);
+            
+            // Fazer login automaticamente
+            fazerLoginAutomatico(novoUsuario);
+            mostrarNotificacao(`Conta criada com sucesso! Bem-vindo(a), ${username}! 🎉`, 'sucesso');
+        }
+
+        function fazerLogin() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            if (!username) {
+                mostrarNotificacao('Por favor, digite seu nome!', 'erro');
+                return;
+            }
+            
+            const usuarios = carregarUsuarios();
+            const usuarioEncontrado = usuarios.find(u => u.username === username);
+            
+            if (!usuarioEncontrado) {
+                mostrarNotificacao('Usuário não encontrado! Crie uma conta primeiro.', 'erro');
+                return;
+            }
+            
+            // Verificar senha (se foi definida)
+            if (usuarioEncontrado.password && usuarioEncontrado.password !== password) {
+                mostrarNotificacao('Senha incorreta! Tente novamente.', 'erro');
+                return;
+            }
+            
+            fazerLoginAutomatico(usuarioEncontrado);
+            mostrarNotificacao(`Bem-vindo de volta, ${username}! 👋`, 'sucesso');
+        }
+
+        function fazerLoginAutomatico(usuarioEncontrado) {
+            // Salvar usuário atual
+            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(usuarioEncontrado));
+            
+            // Atualizar usuário global
+            usuario = usuarioEncontrado;
+            
+            // IMPORTANTE: Esconder a coluna de login E mostrar o site principal
+            document.querySelector('.auth-column').style.display = 'none';
+            document.querySelector('.info-column').style.display = 'none';
+            document.querySelector('.main-content').style.display = 'none';
+            document.querySelector('.site-footer').style.display = 'none';
+            
+            // Mostrar o site principal
+            document.getElementById('main-site').style.display = 'block';
+            
+            // Iniciar música automaticamente
+            setTimeout(() => {
+                iniciarMusicaAutomaticamente();
+            }, 1000);
+            
+            // Atualizar TODOS os lugares com o nome do usuário
+            atualizarNomeUsuarioEmTodosOsLugares();
+            
+            // Atualizar interface
+            atualizarInterfaceUsuario();
+            
+            // Carregar conteúdo do usuário
+            if (usuario.quizCompleto) {
+                mostrarSitePrincipal();
+            }
+        }
+
+        function atualizarNomeUsuarioEmTodosOsLugares() {
+            if (!usuario || !usuario.username) return;
+            
+            const nomeUsuario = usuario.username;
+            
+            // Atualizar na barra de navegação
+            const perfilNome = document.getElementById('perfil-nome');
+            if (perfilNome) perfilNome.textContent = nomeUsuario;
+            
+            // Atualizar no título da seção
+            const nomeUsuarioElement = document.getElementById('nome-usuario');
+            if (nomeUsuarioElement) nomeUsuarioElement.textContent = nomeUsuario;
+            
+            // Atualizar no campo de nome do depoimento (se existir)
+            const depoimentoNome = document.getElementById('depoimento-nome');
+            if (depoimentoNome && !depoimentoNome.value) {
+                depoimentoNome.value = nomeUsuario;
+            }
+            
+            // Atualizar avatar se existir
+            const perfilAvatar = document.getElementById('perfil-avatar');
+            if (perfilAvatar && usuario.avatar) {
+                perfilAvatar.textContent = usuario.avatar;
+            }
+        }
+
+        function preencherLoginComUsuario(username) {
+            Swal.close(); // Fechar o modal atual
+            
+            // Mostrar formulário de login
+            mostrarForm('login');
+            
+            // Preencher automaticamente
+            document.getElementById('login-username').value = username;
+            document.getElementById('login-password').value = '';
+            
+            // Mostrar instrução
+            document.getElementById('login-password').placeholder = "Deixe em branco e clique em Entrar";
+            
+            // Focar no botão de entrar
+            setTimeout(() => {
+                document.getElementById('login-password').focus();
+            }, 100);
+        }
+
+        function atualizarUsuariosAntigos() {
+            const usuarios = carregarUsuarios();
+            let atualizados = false;
+            
+            usuarios.forEach(usuario => {
+                if (!usuario.email) {
+                    // Para usuários antigos sem email, adicionar um email fictício
+                    usuario.email = `${usuario.username.toLowerCase().replace(/\s+/g, '')}@exemplo.com`;
+                    atualizados = true;
+                }
+            });
+            
+            if (atualizados) {
+                salvarUsuarios(usuarios);
+                console.log('Usuários antigos atualizados com emails');
+            }
+        }
+
+        function verificarLogin() {
+            // Atualizar usuários antigos primeiro
+            atualizarUsuariosAntigos();
+            
+            const usuarioAtual = localStorage.getItem(CURRENT_USER_KEY);
+            
+            if (usuarioAtual) {
+                const usuarioSalvo = JSON.parse(usuarioAtual);
+                fazerLoginAutomatico(usuarioSalvo);
+            }
+        }
+
+        // ================ SISTEMA DE MÚSICA ================
+        const playlist = [
+            {
+                title: "Foco 1",
+                artist: "Música para Concentração",
+                url: "musicas/foco1.mp3"
+            },
+            {
+                title: "Foco 2", 
+                artist: "Som Ambiente Relaxante",
+                url: "musicas/foco2.mp3"
+            },
+            {
+                title: "Foco 3",
+                artist: "Lo-Fi para Produtividade",
+                url: "musicas/foco3.mp3"
+            },
+            {
+                title: "Foco 4",
+                artist: "Música para Foco Profundo",
+                url: "musicas/foco4.mp3"
+            }
+        ];
+
+        let musicaAtual = 0;
+        let musicaTocando = false;
+        let playerMinimizado = true;
+        let playerHover = false;
+        const audio = document.getElementById('audio-player');
+
+        function iniciarMusicaAutomaticamente() {
+            if (!musicaTocando && audio) {
+                audio.src = playlist[musicaAtual].url;
+                audio.volume = 0.5;
+                audio.play().then(() => {
+                    musicaTocando = true;
+                    const btn = document.getElementById('music-toggle');
+                    if (btn) btn.innerHTML = '<i class="fas fa-pause"></i>';
+                    atualizarInfoMusica();
+                    
+                    // Expandir player por 3 segundos
+                    const player = document.getElementById('music-player');
+                    if (player) {
+                        player.classList.remove('minimized');
+                        setTimeout(() => {
+                            if (!playerHover) {
+                                player.classList.add('minimized');
+                            }
+                        }, 3000);
+                    }
+                }).catch(e => {
+                    console.log('Erro ao tocar música:', e);
+                    mostrarNotificacao('🎵 Clique no player para iniciar a música', 'info');
+                });
+            }
+        }
+
+        function alternarMusica() {
+            const btn = document.getElementById('music-toggle');
+            if (!musicaTocando) {
+                // Iniciar música
+                audio.src = playlist[musicaAtual].url;
+                audio.play();
+                btn.innerHTML = '<i class="fas fa-pause"></i>';
+                musicaTocando = true;
+                atualizarInfoMusica();
+            } else {
+                // Pausar música
+                audio.pause();
+                btn.innerHTML = '<i class="fas fa-play"></i>';
+                musicaTocando = false;
+            }
+        }
+
+        function proximaFaixa() {
+            musicaAtual = (musicaAtual + 1) % playlist.length;
+            if (musicaTocando) {
+                audio.src = playlist[musicaAtual].url;
+                audio.play();
+            }
+            atualizarInfoMusica();
+        }
+
+        function mudarVolume(valor) {
+            audio.volume = valor / 100;
+        }
+
+        function ajustarVolume(valor) {
+            const novoVolume = Math.min(1, Math.max(0, audio.volume + valor));
+            audio.volume = novoVolume;
+            const slider = document.getElementById('volume-slider');
+            if (slider) slider.value = novoVolume * 100;
+        }
+
+        function atualizarInfoMusica() {
+            document.getElementById('current-track').textContent = playlist[musicaAtual].title;
+            document.getElementById('current-artist').textContent = playlist[musicaAtual].artist;
+        }
+
+        function alternarTamanhoPlayer() {
+            const player = document.getElementById('music-player');
+            playerMinimizado = !playerMinimizado;
+            if (playerMinimizado) {
+                player.classList.add('minimized');
+            } else {
+                player.classList.remove('minimized');
+            }
+        }
+
+        // ================ SISTEMA DO QUIZ ================
+        let perguntaAtualQuiz = 0;
+        let respostasQuiz = [];
+
+        const quizSuperpoderes = [
+            {
+                pergunta: "Como você descreve seu estilo de pensamento?",
+                opcoes: [
+                    { texto: "Rápido e associativo (várias ideias ao mesmo tempo)", valor: "criativo" },
+                    { texto: "Focado e profundo em um assunto por vez", valor: "focado" },
+                    { texto: "Intuitivo e emocionalmente conectado", valor: "empatico" },
+                    { texto: "Prático e orientado a soluções", valor: "pratico" }
+                ]
+            },
+            {
+                pergunta: "Quando algo te interessa muito, você:",
+                opcoes: [
+                    { texto: "Entro em hiperfoco e esqueço tudo ao redor", valor: "focado" },
+                    { texto: "Fico super animado e quero compartilhar com todos", valor: "energico" },
+                    { texto: "Vejo conexões criativas em tudo", valor: "criativo" },
+                    { texto: "Planejo como executar da melhor forma", valor: "pratico" }
+                ]
+            },
+            {
+                pergunta: "Em situações sociais, você:",
+                opcoes: [
+                    { texto: "Percebe coisas que outros não percebem", valor: "empatico" },
+                    { texto: "Tem energia contagiante", valor: "energico" },
+                    { texto: "Faz conexões inusitadas entre assuntos", valor: "criativo" },
+                    { texto: "Foca em soluções práticas para problemas", valor: "pratico" }
+                ]
+            },
+            {
+                pergunta: "Seu maior talento natural é:",
+                opcoes: [
+                    { texto: "Criar coisas novas e originais", valor: "criativo" },
+                    { texto: "Concentração profunda quando motivado", valor: "focado" },
+                    { texto: "Entender as pessoas profundamente", valor: "empatico" },
+                    { texto: "Resolver problemas de forma eficiente", valor: "pratico" }
+                ]
+            },
+            {
+                pergunta: "Como você lida com tarefas rotineiras?",
+                opcoes: [
+                    { texto: "Busco formas criativas de torná-las interessantes", valor: "criativo" },
+                    { texto: "Foco intensamente até completar", valor: "focado" },
+                    { texto: "Penso no impacto nas pessoas envolvidas", valor: "empatico" },
+                    { texto: "Organizo de forma eficiente para terminar rápido", valor: "pratico" }
+                ]
+            },
+            {
+                pergunta: "Quando enfrenta um problema complexo:",
+                opcoes: [
+                    { texto: "Vejo múltiplas soluções criativas", valor: "criativo" },
+                    { texto: "Mergulho profundamente até resolver", valor: "focado" },
+                    { texto: "Considero como isso afeta os outros", valor: "empatico" },
+                    { texto: "Analiso logicamente e executo a melhor solução", valor: "pratico" }
+                ]
+            },
+            {
+                pergunta: "Seu nível de energia típico é:",
+                opcoes: [
+                    { texto: "Variável - momentos de muita energia seguidos de calma", valor: "criativo" },
+                    { texto: "Intenso quando interessado, baixo quando não", valor: "focado" },
+                    { texto: "Conectado ao ambiente e às pessoas ao redor", valor: "empatico" },
+                    { texto: "Consistente e direcionado a objetivos", valor: "pratico" }
+                ]
+            },
+            {
+                pergunta: "Como você aprende melhor?",
+                opcoes: [
+                    { texto: "Através de conexões criativas e analogias", valor: "criativo" },
+                    { texto: "Imersão profunda no assunto", valor: "focado" },
+                    { texto: "Colaborando e discutindo com outros", valor: "empatico" },
+                    { texto: "Aplicando na prática imediatamente", valor: "pratico" }
+                ]
+            },
+            {
+                pergunta: "Quando tem uma ideia brilhante:",
+                opcoes: [
+                    { texto: "Fico muito animado e quero executar imediatamente", valor: "energico" },
+                    { texto: "Analiso todos os detalhes antes de começar", valor: "focado" },
+                    { texto: "Penso em como isso pode ajudar os outros", valor: "empatico" },
+                    { texto: "Crio um plano passo a passo para implementar", valor: "pratico" }
+                ]
+            },
+            {
+                pergunta: "No seu ambiente ideal de trabalho:",
+                opcoes: [
+                    { texto: "Precisa ser estimulante e cheio de inspiração", valor: "criativo" },
+                    { texto: "Deve ser tranquilo e sem distrações", valor: "focado" },
+                    { texto: "Gosto de estar perto de pessoas colaborativas", valor: "empatico" },
+                    { texto: "Organizado e com tudo o que preciso à mão", valor: "pratico" }
+                ]
+            }
+        ];
+
+        const superpoderesInfo = {
+            criativo: {
+                titulo: "Mente Criativa",
+                descricao: "Pensamento divergente e capacidade de fazer conexões únicas",
+                pontos: ["Ideias inovadoras", "Pensamento fora da caixa", "Conexões surpreendentes"],
+                icone: "✨",
+                cor: "#9d4edd",
+                missoes: [2, 6]
+            },
+            focado: {
+                titulo: "Hiperfoco Profundo",
+                descricao: "Capacidade de concentração extraordinária em assuntos de interesse",
+                pontos: ["Produtividade intensa", "Aprendizado acelerado", "Imersão total"],
+                icone: "🎯",
+                cor: "#00d4ff",
+                missoes: [1, 8]
+            },
+            empatico: {
+                titulo: "Empatia Aumentada",
+                descricao: "Sensibilidade emocional e compreensão profunda das pessoas",
+                pontos: ["Inteligência emocional", "Leitura de pessoas", "Habilidade social"],
+                icone: "💖",
+                cor: "#ff6b9d",
+                missoes: [6, 4]
+            },
+            pratico: {
+                titulo: "Pensamento Prático",
+                descricao: "Habilidade de resolver problemas de forma eficiente e direta",
+                pontos: ["Solução rápida", "Eficiência", "Pensamento lógico"],
+                icone: "⚡",
+                cor: "#fbbf24",
+                missoes: [7, 3]
+            },
+            energico: {
+                titulo: "Energia Contagiante",
+                descricao: "Vitalidade intensa e entusiasmo por novos projetos",
+                pontos: ["Motivação", "Iniciativa", "Resiliência"],
+                icone: "🚀",
+                cor: "#4ade80",
+                missoes: [1, 5]
+            }
+        };
+
+        const missoes = [
+            {
+                id: 1,
+                titulo: "Missão Inicial: Pomodoro TDAH",
+                descricao: "Complete 2 sessões de Pomodoro adaptado (15min trabalho / 5min descanso)",
+                categoria: "Produtividade",
+                xp: 50,
+                progresso: 0,
+                maxProgresso: 2,
+                icone: "⏰",
+                cor: "#00d4ff",
+                youtubeId: "sEcD8FBr0I8"
+            },
+            {
+                id: 2,
+                titulo: "Mapa Mental Criativo",
+                descricao: "Crie um mapa mental sobre um projeto pessoal usando cores diferentes",
+                categoria: "Criatividade",
+                xp: 75,
+                progresso: 0,
+                maxProgresso: 1,
+                icone: "🧠",
+                cor: "#9d4edd",
+                youtubeId: "BdYBQgR-Aec"
+            },
+            {
+                id: 3,
+                titulo: "Organização do Ambiente",
+                descricao: "Organize seu espaço de trabalho por 15 minutos",
+                categoria: "Organização",
+                xp: 40,
+                progresso: 0,
+                maxProgresso: 1,
+                icone: "📁",
+                cor: "#4ade80",
+                youtubeId: "Rdc8_fpxC3U"
+            },
+            {
+                id: 4,
+                titulo: "Autoestima",
+                descricao: "Anote 3 pequenas conquistas do seu dia e celebre-as",
+                categoria: "Autoestima",
+                xp: 30,
+                progresso: 0,
+                maxProgresso: 3,
+                icone: "🏆",
+                cor: "#fbbf24",
+                youtubeId: "UDyUkeRWhTM"
+            },
+            {
+                id: 5,
+                titulo: "Técnica de Respiração",
+                descricao: "Pratique respiração 4-7-8 por 5 minutos",
+                categoria: "Bem-estar",
+                xp: 35,
+                progresso: 0,
+                maxProgresso: 1,
+                icone: "🌬️",
+                cor: "#00d4ff",
+                youtubeId: "gz4G31LGyog"
+            },
+            {
+                id: 6,
+                titulo: "Body Doubling Virtual",
+                descricao: "Trabalhe junto com alguém (mesmo virtualmente) por 30 minutos",
+                categoria: "Social",
+                xp: 60,
+                progresso: 0,
+                maxProgresso: 1,
+                icone: "👥",
+                cor: "#ff6b9d",
+                youtubeId: "TWS3kIOw40E"
+            },
+            {
+                id: 7,
+                titulo: "Lista de Prioridades",
+                descricao: "Use a matriz de Eisenhower para priorizar suas tarefas",
+                categoria: "Planejamento",
+                xp: 55,
+                progresso: 0,
+                maxProgresso: 1,
+                icone: "🎯",
+                cor: "#f87171",
+                youtubeId: "pFobgL9dfKY"
+            },
+            {
+                id: 8,
+                titulo: "Desafio do Foco",
+                descricao: "Fique 25 minutos sem checar redes sociais",
+                categoria: "Foco",
+                xp: 45,
+                progresso: 0,
+                maxProgresso: 1,
+                icone: "🔒",
+                cor: "#9d4edd",
+                youtubeId: "Hu4Yvq-g7_Y"
+            }
+        ];
+
+        // ================ FUNÇÕES DO SISTEMA ================
+        function salvarUsuario() {
+            const usuarios = carregarUsuarios();
+            const index = usuarios.findIndex(u => u.username === usuario.username);
+            if (index !== -1) {
+                usuarios[index] = usuario;
+                salvarUsuarios(usuarios);
+            }
+            
+            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(usuario));
+        }
+
+        function mostrarSitePrincipal() {
+            document.getElementById('hero-title-usuario').textContent = usuario.quizCompleto ? 
+                `Bem-vindo de volta, ${usuario.username}!` : 
+                `Descubra Seus Superpoderes TDAH`;
+            
+            document.getElementById('perfil-nome').textContent = usuario.username;
+            document.getElementById('perfil-avatar').textContent = usuario.avatar;
+            document.getElementById('nome-usuario').textContent = usuario.username;
+            
+            if (usuario.quizCompleto) {
+                document.getElementById('jornada').style.display = 'block';
+                document.getElementById('missoes').style.display = 'block';
+                document.getElementById('btn-quiz').style.display = 'none';
+                carregarSuperpoderesUsuario();
+                carregarMissoes();
+                criarFiltros();
+            } else {
+                document.getElementById('btn-quiz').style.display = 'block';
+            }
+            
+            atualizarInterfaceUsuario();
+        }
+
+        function atualizarInterfaceUsuario() {
+            if (!usuario.username) return;
+            
+            document.getElementById('xp-count').textContent = `${usuario.xp} XP`;
+            document.getElementById('perfil-nivel').textContent = `Nível ${usuario.nivel}`;
+            
+            atualizarEstatisticasUsuario();
+        }
+
+        function adicionarXP(quantidade) {
+            usuario.xp += quantidade;
+            
+            const nivelAnterior = usuario.nivel;
+            usuario.nivel = Math.floor(usuario.xp / 100) + 1;
+            
+            if (usuario.nivel > nivelAnterior) {
+                mostrarNotificacao(`🎉 LEVEL UP! Agora você é Nível ${usuario.nivel}!`, 'sucesso');
+                criarConfetes();
+            }
+            
+            salvarUsuario();
+            atualizarInterfaceUsuario();
+        }
+
+        // ================ FUNÇÕES DO QUIZ ================
+        function abrirQuizSuperpoderes() {
+            perguntaAtualQuiz = 0;
+            respostasQuiz = [];
+            document.getElementById('quiz-modal').style.display = 'flex';
+            carregarPerguntaQuiz();
+        }
+
+        function fecharQuiz() {
+            Swal.fire({
+                title: 'Sair do Quiz?',
+                text: 'Seu progresso será perdido. Quer mesmo sair?',
+                icon: 'question',
+                background: 'var(--card)',
+                color: 'var(--text)',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, sair',
+                cancelButtonText: 'Continuar quiz',
+                confirmButtonColor: 'var(--danger)',
+                cancelButtonColor: 'var(--primary)'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('quiz-modal').style.display = 'none';
+                    mostrarNotificacao('Quiz cancelado. Você pode tentar novamente quando quiser!', 'info');
+                }
+            });
+        }
+
+        function carregarPerguntaQuiz() {
+            const container = document.getElementById('quiz-questions');
+            const pergunta = quizSuperpoderes[perguntaAtualQuiz];
+            
+            container.innerHTML = `
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem;">
+                        Pergunta ${perguntaAtualQuiz + 1} de ${quizSuperpoderes.length}
+                    </h3>
+                    <p style="color: var(--text); font-size: 1.1rem; margin-bottom: 1.5rem;">${pergunta.pergunta}</p>
+                    
+                    <div style="display: grid; gap: 0.8rem;">
+                        ${pergunta.opcoes.map((opcao, index) => `
+                            <div class="btn-filtro ${respostasQuiz[perguntaAtualQuiz] === index ? 'ativo' : ''}"
+                                 onclick="selecionarRespostaQuiz(${index})"
+                                 style="text-align: left; padding: 1rem; cursor: pointer;">
+                                ${opcao.texto}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('quiz-prev').style.display = perguntaAtualQuiz > 0 ? 'block' : 'none';
+            document.getElementById('quiz-next').style.display = perguntaAtualQuiz < quizSuperpoderes.length - 1 ? 'block' : 'none';
+            document.getElementById('quiz-submit').style.display = perguntaAtualQuiz === quizSuperpoderes.length - 1 ? 'block' : 'none';
+        }
+
+        function selecionarRespostaQuiz(index) {
+            respostasQuiz[perguntaAtualQuiz] = index;
+            carregarPerguntaQuiz();
+        }
+
+        function quizAnterior() {
+            if (perguntaAtualQuiz > 0) {
+                perguntaAtualQuiz--;
+                carregarPerguntaQuiz();
+            }
+        }
+
+        function quizProxima() {
+            if (respostasQuiz[perguntaAtualQuiz] === undefined) {
+                mostrarNotificacao('Por favor, selecione uma opção', 'erro');
+                return;
+            }
+            
+            if (perguntaAtualQuiz < quizSuperpoderes.length - 1) {
+                perguntaAtualQuiz++;
+                carregarPerguntaQuiz();
+            }
+        }
+
+        function finalizarQuiz() {
+            if (respostasQuiz.length < quizSuperpoderes.length) {
+                mostrarNotificacao('Por favor, responda todas as perguntas', 'erro');
+                return;
+            }
+            
+            // Analisar respostas
+            const contagem = {};
+            respostasQuiz.forEach((respostaIndex, i) => {
+                const pergunta = quizSuperpoderes[i];
+                const valor = pergunta.opcoes[respostaIndex].valor;
+                contagem[valor] = (contagem[valor] || 0) + 1;
+            });
+            
+            let principal = Object.keys(contagem)[0];
+            let maiorContagem = contagem[principal];
+            
+            for (const [poder, qtd] of Object.entries(contagem)) {
+                if (qtd > maiorContagem) {
+                    principal = poder;
+                    maiorContagem = qtd;
+                }
+            }
+            
+            const perfis = {
+                criativo: "Criativo-Inovador",
+                focado: "Focado-Profundo", 
+                empatico: "Empático-Social",
+                pratico: "Prático-Eficiente",
+                energico: "Enérgico-Motivador"
+            };
+            
+            usuario.superpoderes = [principal];
+            usuario.perfilTDAH = perfis[principal] || "Misto-Adaptável";
+            usuario.quizCompleto = true;
+            
+            adicionarXP(150);
+            
+            document.getElementById('quiz-modal').style.display = 'none';
+            mostrarResultadoQuiz(principal);
+            
+            salvarUsuario();
+        }
+
+        function mostrarResultadoQuiz(poderPrincipal) {
+            const poder = superpoderesInfo[poderPrincipal];
+            
+            document.getElementById('hero-title-usuario').textContent = `Seu superpoder: ${poder.titulo}`;
+            document.getElementById('tipo-tdah').textContent = usuario.perfilTDAH;
+            
+            document.getElementById('jornada').style.display = 'block';
+            document.getElementById('btn-quiz').style.display = 'none';
+            
+            const gamificationBar = document.getElementById('gamification-bar');
+            gamificationBar.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-item" onclick="abrirQuizSuperpoderes()">
+                        <h3>${poder.icone}</h3>
+                        <p>${poder.titulo}</p>
+                    </div>
+                    <div class="stat-item" onclick="carregarMissoes()">
+                        <h3>${usuario.xp}</h3>
+                        <p>Total XP</p>
+                    </div>
+                    <div class="stat-item" onclick="mostrarTodasMissoes()">
+                        <h3>${missoes.length}</h3>
+                        <p>Missões</p>
+                    </div>
+                    <div class="stat-item" onclick="scrollToSection('jornada')">
+                        <h3>Nível ${usuario.nivel}</h3>
+                        <p>Sua Jornada</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="color: var(--primary); font-weight: 600;">Progresso do Nível</span>
+                        <span style="color: var(--muted);">${usuario.xp % 100}/100 XP</span>
+                    </div>
+                    <div style="height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; overflow: hidden;">
+                        <div id="barra-xp" style="height: 100%; background: linear-gradient(45deg, var(--primary), var(--accent)); width: ${(usuario.xp % 100)}%; border-radius: 5px;"></div>
+                    </div>
+                </div>
+            `;
+            
+            carregarSuperpoderesUsuario();
+            carregarMissoes();
+            criarFiltros();
+            atualizarSuperpoderDepoimento();
+            
+            mostrarNotificacao(`🎯 Superpoder descoberto: ${poder.titulo}! +150 XP`, 'sucesso');
+            criarConfetes();
+        }
+
+        function carregarSuperpoderesUsuario() {
+            const container = document.getElementById('superpoderes-container');
+            if (!usuario.superpoderes.length) return;
+            
+            const poderPrincipal = usuario.superpoderes[0];
+            const poder = superpoderesInfo[poderPrincipal];
+            
+            container.innerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">${poder.icone}</div>
+                    <h3 style="color: ${poder.cor}; font-size: 2rem; margin-bottom: 0.5rem;">${poder.titulo}</h3>
+                    <p style="color: var(--text); font-size: 1.1rem;">${poder.descricao}</p>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    ${poder.pontos.map(ponto => `
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 10px; border-left: 4px solid ${poder.cor};">
+                            <p style="color: var(--text); margin: 0;">${ponto}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="background: rgba(${hexToRgb(poder.cor)}, 0.1); padding: 1.5rem; border-radius: 15px; margin-top: 2rem; border: 1px solid ${poder.cor}40;">
+                    <h4 style="color: ${poder.cor}; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-bullseye"></i> Missões Recomendadas para Você:
+                    </h4>
+                    <p style="color: var(--text);">
+                        Com base no seu superpoder, recomendamos começar pelas missões de 
+                        <strong style="color: ${poder.cor};">${missoes.filter(m => poder.missoes.includes(m.id)).map(m => m.categoria).join(' e ')}</strong>.
+                    </p>
+                </div>
+            `;
+        }
+
+        function hexToRgb(hex) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `${r}, ${g}, ${b}`;
+        }
+
+        function iniciarJornadaGamificada() {
+            document.getElementById('missoes').style.display = 'block';
+            scrollToSection('missoes');
+            mostrarNotificacao('🎮 Jornada gamificada iniciada! Complete missões para ganhar XP.', 'sucesso');
+        }
+
+        // ================ SISTEMA DE MISSÕES ================
+        function criarFiltros() {
+            const container = document.getElementById('filtros-container');
+            if (!container) return;
+            
+            const categorias = ['todas', ...new Set(missoes.map(m => m.categoria))];
+            
+            container.innerHTML = categorias.map(cat => {
+                const nomeExibicao = cat === 'todas' ? 'Todas as Missões' : cat;
+                return `
+                    <button class="btn-filtro" onclick="filtrarMissoes('${cat}')">
+                        ${nomeExibicao}
+                    </button>
+                `;
+            }).join('');
+            
+            filtrarMissoes('todas');
+        }
+
+        function carregarMissoes(filtro = 'todas') {
+            const container = document.getElementById('missoes-container');
+            if (!container) return;
+            
+            let missoesFiltradas = missoes;
+            if (filtro !== 'todas') {
+                missoesFiltradas = missoes.filter(m => m.categoria === filtro);
+            }
+            
+            container.innerHTML = missoesFiltradas.map(mission => {
+                const concluida = usuario.missoesConcluidas?.includes(mission.id) || mission.progresso >= mission.maxProgresso;
+                const emProgresso = mission.progresso > 0 && !concluida;
+                
+                const youtubeId = mission.youtubeId || "CnsBqxiD2Ig";
+                
+                return `
+                    <div class="missao-card ${concluida ? 'concluida' : emProgresso ? 'em-progresso' : ''}">
+                        <div class="missao-badge ${concluida ? 'concluida' : ''}">
+                            ${concluida ? '✅ Concluída' : mission.icone}
+                        </div>
+                        
+                        <!-- IMAGEM DO VÍDEO -->
+                        <div style="width: 100%; height: 180px; overflow: hidden; position: relative; cursor: pointer;"
+                             onclick="abrirVideo('${youtubeId}')">
+                            <img src="https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg" 
+                                 alt="${mission.titulo}" 
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+                                       background: linear-gradient(to bottom, transparent, rgba(10, 15, 30, 0.8));">
+                            </div>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                       font-size: 2.5rem; color: white; background: rgba(0,0,0,0.5); 
+                                       padding: 0.8rem; border-radius: 50%;">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            ${concluida ? 
+                                `<div style="position: absolute; top: 10px; left: 10px; background: var(--success); 
+                                           color: white; padding: 0.3rem 0.8rem; border-radius: 10px; font-size: 0.8rem;">
+                                    <i class="fas fa-check"></i> Concluído
+                                </div>` : ''}
+                        </div>
+                        
+                        <div class="missao-conteudo">
+                            <h3 class="missao-titulo">
+                                ${mission.titulo}
+                            </h3>
+                            <p class="missao-descricao">${mission.descricao}</p>
+                            
+                            <div style="display: flex; justify-content: space-between; margin: 1rem 0; 
+                                       padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--muted);">Categoria</div>
+                                    <div style="color: var(--accent); font-size: 0.9rem;">${mission.categoria}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--muted);">Recompensa</div>
+                                    <div style="color: var(--warning); font-weight: bold;">
+                                        <i class="fas fa-star"></i> +${mission.xp} XP
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="missao-progresso">
+                                <div class="missao-progresso-bar" style="width: ${(mission.progresso / mission.maxProgresso) * 100}%"></div>
+                            </div>
+                            
+                            <div class="missao-recompensa">
+                                <span style="color: var(--muted); font-size: 0.9rem;">
+                                    ${mission.progresso}/${mission.maxProgresso} progresso
+                                </span>
+                                <span style="color: var(--warning); font-weight: bold;">
+                                    <i class="fas fa-star"></i> +${mission.xp} XP
+                                </span>
+                            </div>
+                            
+                            <button onclick="iniciarMissao(${mission.id})" 
+                                    class="btn-epic" 
+                                    style="width: 100%; margin-top: 1rem;"
+                                    ${concluida ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+                                <i class="fas fa-${concluida ? 'check' : 'play'}"></i>
+                                ${concluida ? 'Missão Concluída' : emProgresso ? 'Continuar Missão' : 'Iniciar Missão'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filtrarMissoes(categoria) {
+            document.querySelectorAll('.btn-filtro').forEach(btn => {
+                btn.classList.remove('ativo');
+            });
+            
+            event.target.classList.add('ativo');
+            carregarMissoes(categoria);
+        }
+
+        function iniciarMissao(id) {
+            const missao = missoes.find(m => m.id === id);
+            if (!missao) return;
+            
+            Swal.fire({
+                title: `🎯 ${missao.titulo}`,
+                html: `
+                    <div style="text-align: left;">
+                        <p style="color: var(--text); margin-bottom: 1.5rem;">${missao.descricao}</p>
+                        
+                        <div style="background: rgba(0, 212, 255, 0.1); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                            <h4 style="color: var(--primary); margin-bottom: 0.5rem;">Instruções:</h4>
+                            <ol style="color: var(--text); padding-left: 1.5rem;">
+                                <li>Prepare-se para a tarefa</li>
+                                <li>Execute por ${missao.maxProgresso === 1 ? 'um período' : missao.maxProgresso + ' vezes'}</li>
+                                <li>Marque como concluído ao terminar</li>
+                            </ol>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button onclick="concluirMissao(${id})" 
+                                    style="background: var(--success); color: white; border: none; 
+                                           padding: 1rem 2rem; border-radius: 10px; font-weight: bold;
+                                           cursor: pointer; width: 100%;">
+                                <i class="fas fa-check-circle"></i> Marcar como Concluída
+                            </button>
+                        </div>
+                    </div>
+                `,
+                background: 'var(--card)',
+                color: 'var(--text)',
+                showConfirmButton: false,
+                showCloseButton: true,
+                width: '500px'
+            });
+        }
+
+        function concluirMissao(id) {
+            const missao = missoes.find(m => m.id === id);
+            if (!missao) return;
+            
+            missao.progresso++;
+            
+            if (missao.progresso >= missao.maxProgresso) {
+                if (!usuario.missoesConcluidas) usuario.missoesConcluidas = [];
+                if (!usuario.missoesConcluidas.includes(id)) {
+                    usuario.missoesConcluidas.push(id);
+                    adicionarXP(missao.xp);
+                    
+                    Swal.fire({
+                        title: '🏆 Missão Concluída!',
+                        html: `
+                            <div style="text-align: center;">
+                                <div style="font-size: 4rem; color: var(--warning); margin-bottom: 1rem;">⭐</div>
+                                <h3 style="color: var(--primary); margin-bottom: 1rem;">${missao.titulo}</h3>
+                                <p style="color: var(--text); margin-bottom: 1.5rem;">
+                                    Você ganhou <strong style="color: var(--warning);">+${missao.xp} XP</strong>!
+                                </p>
+                                <p style="color: var(--muted); font-size: 0.9rem;">
+                                    Continue completando missões para subir de nível!
+                                </p>
+                            </div>
+                        `,
+                        background: 'var(--card)',
+                        color: 'var(--text)',
+                        confirmButtonText: 'Continuar Jornada',
+                        confirmButtonColor: 'var(--primary)',
+                        showCloseButton: true
+                    });
+                    
+                    criarConfetes();
+                }
+            } else {
+                mostrarNotificacao(`Progresso: ${missao.progresso}/${missao.maxProgresso}`, 'info');
+            }
+            
+            salvarUsuario();
+            carregarMissoes();
+        }
+
+        function mostrarTodasMissoes() {
+            scrollToSection('missoes');
+        }
+
+        // ================ FUNÇÕES AUXILIARES ================
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+            setActiveNav(document.querySelector(`[href="#${sectionId}"]`));
+        }
+
+        function setActiveNav(elemento) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            elemento.classList.add('active');
+        }
+
+        function abrirVideo(youtubeId) {
+            window.open(`https://www.youtube.com/watch?v=${youtubeId}`, '_blank');
+            adicionarXP(10);
+        }
+
+        function mostrarNotificacao(mensagem, tipo = 'info') {
+            const notifAnterior = document.querySelector('.notificacao');
+            if (notifAnterior) notifAnterior.remove();
+            
+            const notificacao = document.createElement('div');
+            notificacao.className = 'notificacao';
+            
+            let icone = 'info-circle';
+            if (tipo === 'sucesso') icone = 'check-circle';
+            if (tipo === 'erro') icone = 'exclamation-circle';
+            
+            notificacao.innerHTML = `
+                <i class="fas fa-${icone}"></i>
+                <span>${mensagem}</span>
+            `;
+            
+            notificacao.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 10px;
+                background: ${tipo === 'sucesso' ? 'var(--success)' : tipo === 'erro' ? 'var(--danger)' : 'var(--primary)'};
+                color: white;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            document.body.appendChild(notificacao);
+            
+            setTimeout(() => {
+                notificacao.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notificacao.remove(), 300);
+            }, 3000);
+        }
+
+        function criarConfetes(quantidade = 20) {
+            const cores = ['#00d4ff', '#ff6b9d', '#9d4edd', '#4ade80', '#fbbf24'];
+            
+            for (let i = 0; i < quantidade; i++) {
+                const confete = document.createElement('div');
+                confete.style.cssText = `
+                    position: fixed;
+                    width: 10px;
+                    height: 10px;
+                    background: ${cores[Math.floor(Math.random() * cores.length)]};
+                    border-radius: 50%;
+                    top: -20px;
+                    left: ${Math.random() * 100}vw;
+                    z-index: 9998;
+                    animation: fall ${Math.random() * 2 + 1}s linear forwards;
+                `;
+                
+                document.body.appendChild(confete);
+                setTimeout(() => confete.remove(), 3000);
+            }
+        }
+
+        // ================ SISTEMA DE DEPOIMENTOS ================
+        let depoimentos = [];
+
+        function atualizarEstatisticasUsuario() {
+            document.getElementById('stats-nivel').textContent = `Nível ${usuario.nivel}`;
+            document.getElementById('stats-xp').textContent = `${usuario.xp} XP`;
+            
+            const missoesCompletas = usuario.missoesConcluidas?.length || 0;
+            document.getElementById('stats-missoes').textContent = missoesCompletas;
+            
+            if (usuario.quizCompleto && usuario.superpoderes.length > 0) {
+                const poder = superpoderesInfo[usuario.superpoderes[0]];
+                document.getElementById('stats-superpoder').textContent = poder.icone;
+            }
+        }
+
+        function atualizarSuperpoderDepoimento() {
+            const container = document.getElementById('superpoder-depoimento');
+            const tagsContainer = document.getElementById('superpoder-tags');
+            
+            if (usuario.quizCompleto && usuario.superpoderes.length > 0) {
+                container.style.display = 'block';
+                const poder = superpoderesInfo[usuario.superpoderes[0]];
+                
+                tagsContainer.innerHTML = `
+                    <div style="
+                        background: linear-gradient(45deg, var(--primary), var(--accent));
+                        color: white;
+                        padding: 0.5rem 1rem;
+                        border-radius: 10px;
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        width: fit-content;
+                    ">
+                        ${poder.icone} ${poder.titulo}
+                    </div>
+                `;
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function atualizarContadorDepoimento() {
+            const textarea = document.getElementById('depoimento-mensagem');
+            const contador = document.getElementById('depoimento-contador');
+            const xpInfo = document.getElementById('depoimento-xp');
+            const progresso = document.getElementById('depoimento-progresso');
+            
+            if (!textarea || !contador) return;
+            
+            const quantidade = textarea.value.length;
+            contador.textContent = `${quantidade}/2000 caracteres`;
+            
+            const percentual = (quantidade / 2000) * 100;
+            if (progresso) progresso.style.width = `${percentual}%`;
+            
+            if (xpInfo) {
+                if (quantidade >= 200) {
+                    xpInfo.innerHTML = `<i class="fas fa-trophy"></i> +100 XP garantidos!`;
+                    xpInfo.style.color = 'var(--success)';
+                } else if (quantidade >= 100) {
+                    xpInfo.innerHTML = `<i class="fas fa-star"></i> +50 XP garantidos!`;
+                    xpInfo.style.color = 'var(--warning)';
+                } else if (quantidade >= 50) {
+                    xpInfo.innerHTML = `<i class="fas fa-star"></i> +25 XP ao publicar`;
+                    xpInfo.style.color = 'var(--warning)';
+                } else {
+                    xpInfo.innerHTML = `Escreva pelo menos 50 caracteres para ganhar XP`;
+                    xpInfo.style.color = 'var(--muted)';
+                }
+            }
+        }
+
+        function visualizarDepoimento() {
+            const nome = document.getElementById('depoimento-nome').value.trim() || usuario.username || "Anônimo";
+            const idade = document.getElementById('depoimento-idade').value;
+            const mensagem = document.getElementById('depoimento-mensagem').value.trim();
+            
+            if (!mensagem) {
+                mostrarNotificacao('Escreva algo para visualizar', 'erro');
+                return;
+            }
+            
+            let idadeTexto = '';
+            if (idade && !isNaN(idade) && idade > 0) {
+                idadeTexto = `, ${idade} anos`;
+            }
+            
+            let superpoderTexto = '';
+            if (usuario.quizCompleto && usuario.superpoderes.length > 0) {
+                const poder = superpoderesInfo[usuario.superpoderes[0]];
+                superpoderTexto = `<br><strong>Superpoder:</strong> ${poder.titulo} ${poder.icone}`;
+            }
+            
+            Swal.fire({
+                title: '👁️ Visualização do Depoimento',
+                html: `
+                    <div style="text-align: left; max-width: 500px;">
+                        <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px;">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div style="width: 50px; height: 50px; border-radius: 50%; 
+                                           background: linear-gradient(45deg, var(--primary), var(--accent));
+                                           display: flex; align-items: center; justify-content: center;
+                                           font-size: 1.5rem;">
+                                    ${nome.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <h4 style="color: var(--primary); margin: 0;">${nome}${idadeTexto}</h4>
+                                    <p style="color: var(--muted); margin: 0; font-size: 0.9rem;">
+                                        Nível ${usuario.nivel} • ${usuario.xp} XP${superpoderTexto}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div style="color: var(--text); line-height: 1.6; padding: 1rem; 
+                                       background: rgba(0,0,0,0.2); border-radius: 10px;">
+                                ${mensagem.replace(/\n/g, '<br>')}
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-top: 1.5rem; color: var(--muted); font-size: 0.9rem;">
+                                <span><i class="far fa-clock"></i> Agora mesmo</span>
+                                <span><i class="far fa-heart"></i> 0 curtidas</span>
+                            </div>
+                        </div>
+                        
+                        <p style="color: var(--muted); margin-top: 1.5rem; font-size: 0.9rem; text-align: center;">
+                            <i class="fas fa-info-circle"></i> Esta é uma prévia. Clique em "Publicar" para compartilhar.
+                        </p>
+                    </div>
+                `,
+                background: 'var(--card)',
+                color: 'var(--text)',
+                showConfirmButton: false,
+                showCloseButton: true,
+                width: '600px'
+            });
+        }
+
+        function enviarDepoimento() {
+            const nomeInput = document.getElementById('depoimento-nome');
+            const idadeInput = document.getElementById('depoimento-idade');
+            const mensagemInput = document.getElementById('depoimento-mensagem');
+            const successAlert = document.getElementById('success-alert');
+            
+            const nome = nomeInput.value.trim() || usuario.username || "Anônimo";
+            const idade = idadeInput.value ? parseInt(idadeInput.value) : null;
+            const mensagem = mensagemInput.value.trim();
+            
+            if (!mensagem) {
+                mostrarNotificacao('Escreva seu depoimento antes de publicar', 'erro');
+                return;
+            }
+            
+            if (mensagem.length < 20) {
+                mostrarNotificacao('Mínimo 20 caracteres para depoimento', 'erro');
+                return;
+            }
+            
+            let xpGanho = 0;
+            if (mensagem.length >= 200) xpGanho = 100;
+            else if (mensagem.length >= 100) xpGanho = 50;
+            else if (mensagem.length >= 50) xpGanho = 25;
+            
+            const novoDepoimento = {
+                id: Date.now(),
+                nome: nome,
+                idade: idade,
+                mensagem: mensagem,
+                xp: usuario.xp,
+                nivel: usuario.nivel,
+                superpoder: usuario.quizCompleto && usuario.superpoderes.length > 0 
+                           ? superpoderesInfo[usuario.superpoderes[0]].titulo 
+                           : null,
+                data: "Agora mesmo",
+                likes: 0,
+                liked: false,
+                avatar: nome.charAt(0).toUpperCase()
+            };
+            
+            depoimentos.unshift(novoDepoimento);
+            
+            if (xpGanho > 0) {
+                adicionarXP(xpGanho);
+            }
+            
+            successAlert.style.display = 'block';
+            successAlert.innerHTML = `
+                <i class="fas fa-trophy"></i> 
+                <strong>+${xpGanho} XP Ganhos!</strong> Seu depoimento foi publicado na comunidade!
+                ${xpGanho >= 50 ? '<br><small>Obrigado por compartilhar sua história detalhada!</small>' : ''}
+            `;
+            
+            if (mensagemInput) mensagemInput.value = '';
+            if (idadeInput) idadeInput.value = '';
+            atualizarContadorDepoimento();
+            
+            carregarDepoimentos();
+            
+            if (xpGanho >= 50) {
+                criarConfetes(30);
+            }
+            
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        function carregarDepoimentos() {
+            const container = document.getElementById('lista-depoimentos');
+            const semDepoimentos = document.getElementById('sem-depoimentos');
+            const totalSpan = document.getElementById('total-depoimentos');
+            
+            if (!container || !semDepoimentos || !totalSpan) return;
+            
+            totalSpan.textContent = depoimentos.length;
+            
+            if (depoimentos.length === 0) {
+                semDepoimentos.style.display = 'block';
+                container.innerHTML = '';
+                return;
+            }
+            
+            semDepoimentos.style.display = 'none';
+            
+            container.innerHTML = depoimentos.map(depoimento => {
+                const idadeTexto = depoimento.idade ? `, ${depoimento.idade} anos` : '';
+                const superpoderTexto = depoimento.superpoder ? 
+                    `<div style="background: rgba(0, 212, 255, 0.1); color: var(--primary); 
+                               padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;
+                               display: inline-flex; align-items: center; gap: 0.3rem;">
+                        <i class="fas fa-star"></i> ${depoimento.superpoder}
+                    </div>` : '';
+                
+                return `
+                    <div style="background: rgba(26, 31, 46, 0.9); border-radius: 20px; padding: 1.5rem; 
+                               border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="width: 50px; height: 50px; border-radius: 50%; 
+                                           background: linear-gradient(45deg, var(--primary), var(--accent));
+                                           display: flex; align-items: center; justify-content: center;
+                                           font-size: 1.5rem; font-weight: bold; color: white;">
+                                    ${depoimento.avatar}
+                                </div>
+                                <div>
+                                    <h4 style="color: var(--primary); margin: 0 0 0.3rem 0;">
+                                        ${depoimento.nome}${idadeTexto}
+                                    </h4>
+                                    <div style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;">
+                                        <span style="color: var(--muted); font-size: 0.9rem;">
+                                            <i class="fas fa-trophy"></i> Nível ${depoimento.nivel}
+                                        </span>
+                                        <span style="color: var(--muted); font-size: 0.9rem;">
+                                            <i class="fas fa-star"></i> ${depoimento.xp} XP
+                                        </span>
+                                        ${superpoderTexto}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="color: var(--muted); font-size: 0.9rem;">
+                                <i class="far fa-clock"></i> ${depoimento.data}
+                            </div>
+                        </div>
+                        
+                        <div style="color: var(--text); line-height: 1.6; margin-bottom: 1.5rem; padding: 0 0.5rem;">
+                            ${depoimento.mensagem.replace(/\n/g, '<br>')}
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; 
+                                   padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            <button onclick="curtirDepoimento(${depoimento.id})" 
+                                    style="background: transparent; border: none; color: ${depoimento.liked ? 'var(--secondary)' : 'var(--muted)'}; 
+                                           cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-heart"></i> Curtir (${depoimento.likes})
+                            </button>
+                            
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button onclick="compartilharDepoimento(${depoimento.id})" 
+                                        style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--primary); 
+                                               color: var(--primary); padding: 0.5rem 1rem; border-radius: 10px;
+                                               cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-share"></i> Compartilhar
+                                </button>
+                                
+                                <button onclick="responderDepoimento(${depoimento.id})" 
+                                        style="background: rgba(157, 78, 221, 0.1); border: 1px solid var(--accent); 
+                                               color: var(--accent); padding: 0.5rem 1rem; border-radius: 10px;
+                                               cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-reply"></i> Responder
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function curtirDepoimento(id) {
+            const depoimento = depoimentos.find(d => d.id === id);
+            if (!depoimento) return;
+            
+            if (depoimento.liked) {
+                depoimento.likes--;
+                depoimento.liked = false;
+            } else {
+                depoimento.likes++;
+                depoimento.liked = true;
+                adicionarXP(5);
+                mostrarNotificacao('Curtido! +5 XP', 'sucesso');
+            }
+            
+            carregarDepoimentos();
+        }
+
+        function compartilharDepoimento(id) {
+            const depoimento = depoimentos.find(d => d.id === id);
+            if (!depoimento) return;
+            
+            const texto = `"${depoimento.mensagem.substring(0, 100)}..."\n\n- ${depoimento.nome}, comunidade TDAH não é desculpa\n\nCompartilhe sua jornada também!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Depoimento da Comunidade TDAH',
+                    text: texto,
+                    url: window.location.href
+                }).then(() => {
+                    adicionarXP(10);
+                    mostrarNotificacao('Depoimento compartilhado! +10 XP', 'sucesso');
+                });
+            } else {
+                navigator.clipboard.writeText(texto).then(() => {
+                    adicionarXP(10);
+                    mostrarNotificacao('Depoimento copiado! +10 XP', 'sucesso');
+                });
+            }
+        }
+
+        function responderDepoimento(id) {
+            const depoimento = depoimentos.find(d => d.id === id);
+            if (!depoimento) return;
+            
+            Swal.fire({
+                title: `Responder a ${depoimento.nome}`,
+                input: 'textarea',
+                inputLabel: 'Sua resposta',
+                inputPlaceholder: 'Digite sua resposta aqui...',
+                inputAttributes: {
+                    maxlength: 500
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Enviar Resposta',
+                cancelButtonText: 'Cancelar',
+                background: 'var(--card)',
+                color: 'var(--text)'
+            }).then((result) => {
+                if (result.isConfirmed && result.value.trim()) {
+                    adicionarXP(15);
+                    mostrarNotificacao('Resposta enviada! +15 XP', 'sucesso');
+                }
+            });
+        }
+
+        function compartilharEvolucao() {
+            const missoesCompletas = usuario.missoesConcluidas?.length || 0;
+            const superpoderTexto = usuario.quizCompleto && usuario.superpoderes.length > 0 
+                ? `Meu superpoder: ${superpoderesInfo[usuario.superpoderes[0]].titulo} ${superpoderesInfo[usuario.superpoderes[0]].icone}\n` 
+                : '';
+            
+            const texto = `🎮 Minha evolução na Jornada TDAH:\n\n` +
+                         `🏆 Nível ${usuario.nivel}\n` +
+                         `⭐ ${usuario.xp} XP conquistados\n` +
+                         `✅ ${missoesCompletas} missões completas\n` +
+                         superpoderTexto +
+                         `\nJunte-se a mim nessa jornada gamificada!\n#TDAHnaoEDesculpa #Neurodiversidade`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Minha Evolução TDAH',
+                    text: texto,
+                    url: window.location.href
+                }).then(() => {
+                    adicionarXP(20);
+                    mostrarNotificacao('Evolução compartilhada! +20 XP', 'sucesso');
+                });
+            } else {
+                navigator.clipboard.writeText(texto).then(() => {
+                    adicionarXP(20);
+                    mostrarNotificacao('Evolução copiada! +20 XP', 'sucesso');
+                });
+            }
+        }
+
+        // ================ FUNÇÃO DE LOGOUT ================
+        function fazerLogout() {
+            Swal.fire({
+                title: 'Sair da Jornada?',
+                html: `
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <p style="color: var(--text); margin-bottom: 1rem;">
+                            Você está saindo da sua conta.
+                        </p>
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 10px;">
+                            <p style="color: var(--muted); margin: 0; font-size: 0.9rem;">
+                                <i class="fas fa-info-circle"></i> Seus dados continuam salvos neste navegador.
+                            </p>
+                        </div>
+                    </div>
+                `,
+                background: 'var(--card)',
+                color: 'var(--text)',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, sair',
+                cancelButtonText: 'Continuar',
+                confirmButtonColor: 'var(--danger)',
+                cancelButtonColor: 'var(--primary)',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    executarLogout();
+                }
+            });
+            
+            return false;
+        }
+
+        function executarLogout() {
+            if (audio && !audio.paused) {
+                audio.pause();
+                musicaTocando = false;
+                const btn = document.getElementById('music-toggle');
+                if (btn) btn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+            
+            const player = document.getElementById('music-player');
+            if (player && !player.classList.contains('minimized')) {
+                player.classList.add('minimized');
+            }
+            
+            localStorage.removeItem(CURRENT_USER_KEY);
+            
+            // IMPORTANTE: Mostrar a página inicial novamente
+            document.querySelector('.auth-column').style.display = 'block';
+            document.querySelector('.info-column').style.display = 'block';
+            document.querySelector('.main-content').style.display = 'grid';
+            document.querySelector('.site-footer').style.display = 'block';
+            
+            // Esconder o site principal
+            document.getElementById('main-site').style.display = 'none';
+            
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('register-username').value = '';
+            document.getElementById('register-email').value = '';
+            document.getElementById('register-password').value = '';
+            
+            mostrarForm('login');
+            
+            usuario = {
+                logado: false,
+                nome: '',
+                email: '',
+                avatar: '🧠',
+                xp: 0,
+                nivel: 1,
+                superpoderes: [],
+                perfilTDAH: '',
+                quizCompleto: false,
+                missoesConcluidas: [],
+                dataCadastro: null
+            };
+            
+            mostrarNotificacao('Você saiu da sua conta. Volte sempre! 👋', 'info');
+            document.querySelectorAll('.confete').forEach(confete => confete.remove());
+        }
+
+        // ================ INICIALIZAÇÃO ================
+        document.addEventListener('DOMContentLoaded', function() {
+            verificarLogin();
+            
+            window.addEventListener('scroll', function() {
+                const scrollProgress = document.getElementById('scroll-progress');
+                if (scrollProgress) {
+                    const scrollTop = document.documentElement.scrollTop;
+                    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const progress = (scrollTop / scrollHeight) * 100;
+                    scrollProgress.style.transform = `scaleX(${progress / 100})`;
+                }
+            });
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    scrollToSection(targetId);
+                });
+            });
+            
+            atualizarEstatisticasUsuario();
+            carregarDepoimentos();
+            atualizarSuperpoderDepoimento();
+            
+            const textarea = document.getElementById('depoimento-mensagem');
+            if (textarea) {
+                textarea.addEventListener('input', atualizarContadorDepoimento);
+            }
+            
+            const player = document.getElementById('music-player');
+            if (player) {
+                player.addEventListener('mouseenter', function() {
+                    playerHover = true;
+                    if (player.classList.contains('minimized')) {
+                        player.classList.remove('minimized');
+                    }
+                });
+                
+                player.addEventListener('mouseleave', function() {
+                    playerHover = false;
+                    if (!player.classList.contains('minimized')) {
+                        setTimeout(() => {
+                            if (!playerHover) {
+                                player.classList.add('minimized');
+                            }
+                        }, 1000);
+                    }
+                });
+            }
+            
+            if (audio) {
+                audio.volume = 0.5;
+                if (document.getElementById('volume-slider')) {
+                    document.getElementById('volume-slider').value = 50;
+                }
+            }
+            
+            function garantirNomeUsuarioAtualizado() {
+                if (usuario && usuario.username) {
+                    atualizarNomeUsuarioEmTodosOsLugares();
+                }
+            }
+            
+            setTimeout(garantirNomeUsuarioAtualizado, 100);
+        });
+
+        // ================ SISTEMA DE RECUPERAÇÃO DE SENHA PRÁTICO ================
+        function enviarEmailRecuperacao() {
+            // ... código acima ...
+        }
+
+        function irParaLoginComUsuario(username) {
+            // ... código acima ...
+        }
+
+        function copiarCodigoRecuperacao(codigo) {
+            // ... código acima ...
+        }
+
+        function verificarCodigoRecuperacao() {
+            // ... código acima ...
+        }
+
+        function preencherLoginComUsuario(username) {
+            // ... código acima ...
+        }
+
+        // Função para teste rápido (opcional)
+        function testarRecuperacaoRapida() {
+        const usuarios = carregarUsuarios();
+            if (usuarios.length > 0) {
+        // Usar o primeiro usuário cadastrado para teste
+        document.getElementById('recovery-email').value = usuarios[0].email;
+        mostrarNotificacao('Email preenchido para teste!', 'info');
+            } else {
+        // Se não houver usuários, usar um email de exemplo
+        document.getElementById('recovery-email').value = 'exemplo@teste.com';
+        mostrarNotificacao('Use: exemplo@teste.com para teste', 'info');
+           }
+        }  
+        
+        // Código de debug para verificar se a função está carregada
+        console.log('Debug: Função enviarEmailRecuperacao existe?', typeof enviarEmailRecuperacao);
+
+        // Verificar se o botão está encontrando a função
+        document.addEventListener('DOMContentLoaded', function() {
+        const botaoRecuperacao = document.querySelector('.recovery-btn.primary');
+            if (botaoRecuperacao) {
+        console.log('Debug: Botão de recuperação encontrado');
+        botaoRecuperacao.addEventListener('click', function() {
+            console.log('Debug: Botão clicado');
+            enviarEmailRecuperacao();
+        });
+    }
+});      
+</script> 
+</body>
+</html> 
+    
