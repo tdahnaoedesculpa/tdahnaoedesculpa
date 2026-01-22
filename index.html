@@ -26,6 +26,7 @@
       rel="stylesheet"
     />
     <!-- SweetAlert2 -->
+    <script src="script-com-a-funcao.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link
       rel="stylesheet"
@@ -3572,6 +3573,16 @@
           artistElement.textContent = playlist[musicaAtual].artist;
       }
 
+      function alternarMusica() {
+        const audio = document.getElementById("musicatema");
+        if (audio.paused) {
+          audio.play();
+          console.log("Música iniciada");
+        } else {
+          audio.pause();
+          console.log("Música pausada");
+        }
+      }
       function alternarTamanhoPlayer() {
         const player = document.getElementById("music-player");
         playerMinimizado = !playerMinimizado;
