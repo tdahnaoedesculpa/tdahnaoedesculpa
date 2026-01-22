@@ -5238,6 +5238,50 @@
         "Debug: Função enviarEmailRecuperacao existe?",
         typeof enviarEmailRecuperacao,
       );
+
+      if (typeof alternarMusica === "undefined") {
+        function alternarMusica() {
+          console.log("alternarMusica chamada");
+
+          // Pega o botão e o ícone
+          const botao = document.getElementById("music-toggle");
+          const icone = botao.querySelector("i");
+          const audio = document.getElementById("musicaTema"); // Ajuste este ID se necessário
+
+          // Verifica se o áudio existe
+          if (!audio) {
+            console.error(
+              "Elemento de áudio não encontrado! Procure por #musicaTema",
+            );
+            return;
+          }
+
+          // Alterna entre play e pause
+          if (audio.paused) {
+            audio
+              .play()
+              .then(() => {
+                icone.classList.remove("fa-play");
+                icone.classList.add("fa-pause");
+                console.log("Música iniciada");
+              })
+              .catch((error) => {
+                console.error("Erro ao reproduzir:", error);
+              });
+          } else {
+            audio.pause();
+            icone.classList.remove("fa-pause");
+            icone.classList.add("fa-play");
+            console.log("Música pausada");
+          }
+        }
+      }
+
+      // Função para próxima faixa (se necessário)
+      function proximaFaixa() {
+        console.log("próxima faixa - implementar lógica");
+        // Adicione sua lógica para próxima música aqui
+      }
     </script>
   </body>
 </html>
