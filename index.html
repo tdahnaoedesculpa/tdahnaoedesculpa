@@ -3301,10 +3301,11 @@
         // Mostrar o site principal
         document.getElementById("main-site").style.display = "block";
 
-        // Iniciar música automaticamente
-        setTimeout(() => {
+        // CORREÇÃO DO ERRO 1: Iniciar música apenas após interação
+        document.addEventListener("click", function primeiraInteracao() {
           iniciarMusicaAutomaticamente();
-        }, 1000);
+          document.removeEventListener("click", primeiraInteracao);
+        });
 
         // Atualizar TODOS os lugares com o nome do usuário
         atualizarNomeUsuarioEmTodosOsLugares();
@@ -3443,167 +3444,38 @@
         if (!musicaTocando && audio && !autoplayTentado) {
           autoplayTentado = true;
 
-          // Primeiro, testar se o arquivo existe
-          const testAudio = new Audio();
-          testAudio.src = playlist[musicaAtual].url;
-
-          // Tentar carregar o áudio
+          // CORREÇÃO DO ERRO 2: Não tentar tocar automaticamente
+          // Em vez disso, apenas carregar a música e configurar o botão
           audio.src = playlist[musicaAtual].url;
           audio.volume = 0.3;
           audio.preload = "auto";
 
-          // Adicionar evento para detectar erro de carregamento
-          audio.addEventListener("error", function (e) {
-            console.error("❌ Erro ao carregar música:", e);
-            console.log("URL tentada:", playlist[musicaAtual].url);
+          // Atualizar informações da música
+          atualizarInfoMusica();
 
-            // Tentar caminhos alternativos
-            tentarCaminhosAlternativos();
-          });
-
-          // Adicionar evento para quando carregar com sucesso
-          audio.addEventListener("canplaythrough", function () {
-            console.log(
-              "✅ Música carregada com sucesso:",
-              playlist[musicaAtual].url,
-            );
-            tentarAutoplay();
-          });
-
-          // Carregar a música
-          audio.load();
-
-          // Tentar autoplay após um tempo
-          setTimeout(() => {
-            if (audio.readyState >= 3) {
-              tentarAutoplay();
-            }
-          }, 1000);
-        }
-      }
-
-      function tentarCaminhosAlternativos() {
-        // Tentar caminhos alternativos se o original falhar
-        const caminhosTeste = [
-          playlist[musicaAtual].url,
-          playlist[musicaAtual].url.toLowerCase(),
-          playlist[musicaAtual].url.replace("musicas/", ""),
-          "audio/" + playlist[musicaAtual].url.split("/").pop(),
-          "sounds/" + playlist[musicaAtual].url.split("/").pop(),
-        ];
-
-        let tentativa = 0;
-
-        function testarProximoCaminho() {
-          if (tentativa < caminhosTeste.length) {
-            console.log(
-              `🔍 Tentando caminho alternativo ${tentativa + 1}:`,
-              caminhosTeste[tentativa],
-            );
-            audio.src = caminhosTeste[tentativa];
-            audio.load();
-
-            audio.oncanplaythrough = function () {
-              console.log(
-                `✅ Sucesso com caminho alternativo: ${caminhosTeste[tentativa]}`,
-              );
-              playlist[musicaAtual].url = caminhosTeste[tentativa];
-              tentarAutoplay();
-            };
-
-            audio.onerror = function () {
-              tentativa++;
-              testarProximoCaminho();
-            };
-          } else {
-            console.log("❌ Todos os caminhos falharam");
-            mostrarNotificacao(
-              "🎵 Músicas não encontradas. Clique no botão Play para tentar manualmente.",
-              "info",
-            );
+          // Configurar botão para tocar após interação
+          const btn = document.getElementById("music-toggle");
+          if (btn) {
+            btn.innerHTML =
+              '<i class="fas fa-play" style="color:#ff9800;"></i>';
+            btn.title = "Clique para iniciar a música";
+            btn.style.animation = "pulse 2s infinite";
           }
-        }
 
-        testarProximoCaminho();
-      }
+          console.log("✅ Música carregada, aguardando interação do usuário");
 
-      function tentarAutoplay() {
-        const playPromise = audio.play();
-
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              // SUCESSO - Música iniciou
-              musicaTocando = true;
-              const btn = document.getElementById("music-toggle");
-              if (btn) {
-                btn.innerHTML = '<i class="fas fa-pause"></i>';
-                btn.style.color = "#4CAF50";
-              }
-              atualizarInfoMusica();
-
-              // Expandir player por 3 segundos
-              const player = document.getElementById("music-player");
-              if (player) {
-                player.classList.remove("minimized");
-                setTimeout(() => {
-                  if (!playerHover) {
-                    player.classList.add("minimized");
-                  }
-                }, 3000);
-              }
-
-              console.log("✅ Música iniciada automaticamente");
-            })
-            .catch((error) => {
-              // AUTOPLAY BLOQUEADO
-              console.log("Autoplay bloqueado:", error);
-
-              // Mostrar instrução clara
-              mostrarNotificacao(
-                "🔊 Clique no botão Play para iniciar a música",
-                "info",
-                5000,
-              );
-
-              // Alterar botão para indicar ação necessária
-              const btn = document.getElementById("music-toggle");
-              if (btn) {
-                btn.innerHTML =
-                  '<i class="fas fa-play" style="color:#ff9800;"></i>';
-                btn.title = "Clique para iniciar a música";
-
-                // Adicionar efeito pulsante
-                btn.style.animation = "pulse 2s infinite";
-              }
-
-              // Configurar para iniciar no primeiro clique na página
-              const iniciarNoClique = function (event) {
-                // Ignorar cliques no próprio player de música
-                if (event.target.closest("#music-player")) return;
-
-                audio.play().then(() => {
-                  musicaTocando = true;
-                  const btn = document.getElementById("music-toggle");
-                  if (btn) {
-                    btn.innerHTML = '<i class="fas fa-pause"></i>';
-                    btn.style.animation = "";
-                    btn.style.color = "";
-                  }
-                  atualizarInfoMusica();
-                  mostrarNotificacao("🎵 Música iniciada!", "sucesso");
-                });
-
-                // Remover este listener após sucesso
-                document.removeEventListener("click", iniciarNoClique);
-              };
-
-              document.addEventListener("click", iniciarNoClique);
-            });
+          // Adicionar evento para tocar no primeiro clique
+          document.addEventListener(
+            "click",
+            function primeiraInteracaoMusica() {
+              tocarMusica();
+              document.removeEventListener("click", primeiraInteracaoMusica);
+            },
+          );
         }
       }
 
-      function alternarMusica() {
+      function tocarMusica() {
         const btn = document.getElementById("music-toggle");
         if (!musicaTocando) {
           // Iniciar música
@@ -3613,13 +3485,16 @@
             .then(() => {
               musicaTocando = true;
               btn.innerHTML = '<i class="fas fa-pause"></i>';
+              btn.style.animation = "";
               atualizarInfoMusica();
+              mostrarNotificacao("🎵 Música iniciada!", "sucesso");
             })
             .catch((error) => {
-              console.error("Erro ao iniciar música manualmente:", error);
-
-              // Tentar caminhos alternativos
-              tentarCaminhosAlternativos();
+              console.error("Erro ao iniciar música:", error);
+              mostrarNotificacao(
+                "Clique no botão Play para iniciar a música",
+                "info",
+              );
             });
         } else {
           // Pausar música
@@ -3627,6 +3502,10 @@
           btn.innerHTML = '<i class="fas fa-play"></i>';
           musicaTocando = false;
         }
+      }
+
+      function alternarMusica() {
+        tocarMusica();
       }
 
       function proximaFaixa() {
@@ -3663,9 +3542,9 @@
         const player = document.getElementById("music-player");
         playerMinimizado = !playerMinimizado;
         if (playerMinimizado) {
-          player.classList.add("minimized");
+          player.classList.add("minimizado");
         } else {
-          player.classList.remove("minimized");
+          player.classList.remove("minimizado");
           playerHover = true;
           setTimeout(() => {
             playerHover = false;
@@ -3678,15 +3557,14 @@
         // Verificar arquivos ao carregar
         verificarArquivosMusica();
 
-        // Iniciar música após 2 segundos
-        setTimeout(iniciarMusicaAutomaticamente, 2000);
-
         // Eventos de hover para o player
         const player = document.getElementById("music-player");
         if (player) {
           player.addEventListener("mouseenter", () => {
             playerHover = true;
-            player.classList.remove("minimized");
+            if (player.classList.contains("minimized")) {
+              player.classList.remove("minimized");
+            }
           });
 
           player.addEventListener("mouseleave", () => {
@@ -3699,6 +3577,13 @@
               }, 1000);
             }
           });
+        }
+
+        if (audio) {
+          audio.volume = 0.5;
+          if (document.getElementById("volume-slider")) {
+            document.getElementById("volume-slider").value = 50;
+          }
         }
       });
 
@@ -4411,6 +4296,41 @@
         filtrarMissoes("todas");
       }
 
+      // CORREÇÃO DO ERRO 3: função filtrarMissoes corrigida
+      function filtrarMissoes(categoria) {
+        const botoesFiltro = document.querySelectorAll(
+          "#filtros-container .btn-filtro",
+        );
+        if (botoesFiltro.length === 0) {
+          console.error(
+            "Elementos .btn-filtro não encontrados no container #filtros-container",
+          );
+          return;
+        }
+
+        // Remover classe ativo de todos os botões
+        botoesFiltro.forEach((btn) => {
+          btn.classList.remove("ativo");
+        });
+
+        // Encontrar e ativar o botão correto
+        let botaoAtivo = null;
+        botoesFiltro.forEach((btn) => {
+          if (
+            btn.textContent.trim() ===
+            (categoria === "todas" ? "Todas as Missões" : categoria)
+          ) {
+            botaoAtivo = btn;
+          }
+        });
+
+        if (botaoAtivo) {
+          botaoAtivo.classList.add("ativo");
+        }
+
+        carregarMissoes(categoria);
+      }
+
       function carregarMissoes(filtro = "todas") {
         const container = document.getElementById("missoes-container");
         if (!container) return;
@@ -4504,15 +4424,6 @@
                 `;
           })
           .join("");
-      }
-
-      function filtrarMissoes(categoria) {
-        document.querySelectorAll(".btn-filtro").forEach((btn) => {
-          btn.classList.remove("ativo");
-        });
-
-        event.target.classList.add("ativo");
-        carregarMissoes(categoria);
       }
 
       function iniciarMissao(id) {
@@ -5233,7 +5144,7 @@
             playerHover = false;
             if (!player.classList.contains("minimized")) {
               setTimeout(() => {
-                if (!playerHover) {
+                if (!playerHover && playerMinimizado) {
                   player.classList.add("minimized");
                 }
               }, 1000);
@@ -5271,7 +5182,7 @@
         }
       }
 
-      // Código de debug para verificar se a função está carregada
+      // CORREÇÃO DO ERRO 4: Função enviarEmailRecuperacao já existe e está definida
       console.log(
         "Debug: Função enviarEmailRecuperacao existe?",
         typeof enviarEmailRecuperacao,
