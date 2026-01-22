@@ -2955,7 +2955,7 @@
         </div>
 
         <!-- Áudio para músicas -->
-        <audio id="audio-player" loop></audio>
+        <audio id="audio-player"></audio>
       </footer>
     </div>
     <!-- Fim do main-site -->
@@ -3288,6 +3288,13 @@
           CURRENT_USER_KEY,
           JSON.stringify(usuarioEncontrado),
         );
+        setTimeout(() => {
+          if (audio) {
+            audio.src = playlist[musicaAtual].url;
+            audio.volume = 0.3;
+            atualizarInfoMusica();
+          }
+        }, 500);
 
         // Atualizar usuário global
         usuario = usuarioEncontrado;
@@ -3395,27 +3402,27 @@
         }
       }
 
-      // ================ SISTEMA DE MÚSICA ATUALIZADO ================
+      // ================ SISTEMA DE MÚSICA ================
       const playlist = [
         {
           title: "Foco 1",
           artist: "Música para Concentração",
-          url: "musicas/foco1.mp3",
+          url: "https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3",
         },
         {
           title: "Foco 2",
           artist: "Som Ambiente Relaxante",
-          url: "musicas/foco2.mp3",
+          url: "https://assets.mixkit.co/music/preview/mixkit-driving-ambition-32.mp3",
         },
         {
           title: "Foco 3",
           artist: "Lo-Fi para Produtividade",
-          url: "musicas/foco3.mp3",
+          url: "https://assets.mixkit.co/music/preview/mixkit-deep-urban-623.mp3",
         },
         {
           title: "Foco 4",
           artist: "Música para Foco Profundo",
-          url: "musicas/foco4.mp3",
+          url: "https://assets.mixkit.co/music/preview/mixkit-plinky-544.mp3",
         },
       ];
 
@@ -3424,28 +3431,18 @@
       let playerMinimizado = true;
       let playerHover = false;
       const audio = document.getElementById("audio-player");
-      let autoplayTentado = false;
 
-      function verificarArquivosMusica() {
-        console.log("Verificando arquivos de música...");
-        playlist.forEach((musica, index) => {
-          const img = new Image();
-          img.onerror = function () {
-            console.log(`❌ Arquivo não encontrado: ${musica.url}`);
-          };
-          img.onload = function () {
-            console.log(`✅ Arquivo encontrado: ${musica.url}`);
-          };
-          img.src = musica.url;
-        });
-      }
+      // Usar URLs online para garantir que funcionem
+      playlist.forEach((musica) => {
+        musica.url = musica.url.replace(
+          "musicas/",
+          "https://assets.mixkit.co/music/preview/",
+        );
+      });
 
       function iniciarMusicaAutomaticamente() {
-        if (!musicaTocando && audio && !autoplayTentado) {
-          autoplayTentado = true;
-
-          // CORREÇÃO DO ERRO 2: Não tentar tocar automaticamente
-          // Em vez disso, apenas carregar a música e configurar o botão
+        // SÓ CARREGA a música, NÃO TOCA
+        if (audio && !musicaTocando) {
           audio.src = playlist[musicaAtual].url;
           audio.volume = 0.3;
           audio.preload = "auto";
@@ -3453,7 +3450,7 @@
           // Atualizar informações da música
           atualizarInfoMusica();
 
-          // Configurar botão para tocar após interação
+          // Configurar botão para indicar que precisa clicar
           const btn = document.getElementById("music-toggle");
           if (btn) {
             btn.innerHTML =
@@ -3462,58 +3459,95 @@
             btn.style.animation = "pulse 2s infinite";
           }
 
-          console.log("✅ Música carregada, aguardando interação do usuário");
-
-          // Adicionar evento para tocar no primeiro clique
-          document.addEventListener(
-            "click",
-            function primeiraInteracaoMusica() {
-              tocarMusica();
-              document.removeEventListener("click", primeiraInteracaoMusica);
-            },
-          );
+          console.log("✅ Música carregada. Aguardando clique do usuário...");
         }
       }
 
       function tocarMusica() {
         const btn = document.getElementById("music-toggle");
+
         if (!musicaTocando) {
-          // Iniciar música
-          audio.src = playlist[musicaAtual].url;
+          // Se ainda não carregou, carregar primeiro
+          if (!audio.src) {
+            audio.src = playlist[musicaAtual].url;
+            audio.volume = 0.3;
+          }
+
+          // Tentar tocar
           audio
             .play()
             .then(() => {
+              // SUCESSO: Música começou
               musicaTocando = true;
               btn.innerHTML = '<i class="fas fa-pause"></i>';
               btn.style.animation = "";
+              btn.style.color = "";
               atualizarInfoMusica();
-              mostrarNotificacao("🎵 Música iniciada!", "sucesso");
+
+              console.log("✅ Música iniciada manualmente");
             })
             .catch((error) => {
-              console.error("Erro ao iniciar música:", error);
-              mostrarNotificacao(
-                "Clique no botão Play para iniciar a música",
-                "info",
-              );
+              // FALHA: Mostrar mensagem clara
+              console.error("❌ Erro ao tocar música:", error);
+
+              if (error.name === "NotAllowedError") {
+                mostrarNotificacao(
+                  "🔊 Clique em qualquer lugar da página primeiro, depois no botão Play",
+                  "info",
+                  5000,
+                );
+
+                // Configurar para tocar no próximo clique
+                document.addEventListener(
+                  "click",
+                  function primeiraInteracaoMusica() {
+                    audio
+                      .play()
+                      .then(() => {
+                        musicaTocando = true;
+                        btn.innerHTML = '<i class="fas fa-pause"></i>';
+                        btn.style.animation = "";
+                        mostrarNotificacao("🎵 Música iniciada!", "sucesso");
+                      })
+                      .catch((e) => {
+                        console.error("❌ Ainda não funcionou:", e);
+                        mostrarNotificacao(
+                          "🎵 Tente clicar no botão Play novamente",
+                          "info",
+                        );
+                      });
+
+                    // Remover este listener
+                    document.removeEventListener(
+                      "click",
+                      primeiraInteracaoMusica,
+                    );
+                  },
+                  { once: true },
+                );
+              }
             });
         } else {
           // Pausar música
           audio.pause();
-          btn.innerHTML = '<i class="fas fa-play"></i>';
           musicaTocando = false;
+          btn.innerHTML = '<i class="fas fa-play"></i>';
         }
-      }
-
-      function alternarMusica() {
-        tocarMusica();
       }
 
       function proximaFaixa() {
         musicaAtual = (musicaAtual + 1) % playlist.length;
+        audio.src = playlist[musicaAtual].url;
+
         if (musicaTocando) {
-          audio.src = playlist[musicaAtual].url;
-          audio.play();
+          audio.play().catch((error) => {
+            console.error("❌ Erro ao trocar música:", error);
+            musicaTocando = false;
+            const btn = document.getElementById("music-toggle");
+            if (btn) btn.innerHTML = '<i class="fas fa-play"></i>';
+          });
         }
+
         atualizarInfoMusica();
       }
 
@@ -3541,23 +3575,25 @@
       function alternarTamanhoPlayer() {
         const player = document.getElementById("music-player");
         playerMinimizado = !playerMinimizado;
+
         if (playerMinimizado) {
-          player.classList.add("minimizado");
+          player.classList.add("minimized");
         } else {
-          player.classList.remove("minimizado");
+          player.classList.remove("minimized");
           playerHover = true;
+
+          // Voltar para minimizado após 3 segundos
           setTimeout(() => {
-            playerHover = false;
-          }, 2000);
+            if (!playerHover) {
+              player.classList.add("minimized");
+            }
+          }, 3000);
         }
       }
 
-      // Configurar eventos do player
+      // Eventos do player
       document.addEventListener("DOMContentLoaded", function () {
-        // Verificar arquivos ao carregar
-        verificarArquivosMusica();
-
-        // Eventos de hover para o player
+        // Configurar player
         const player = document.getElementById("music-player");
         if (player) {
           player.addEventListener("mouseenter", () => {
@@ -3569,7 +3605,7 @@
 
           player.addEventListener("mouseleave", () => {
             playerHover = false;
-            if (playerMinimizado) {
+            if (!playerMinimizado) {
               setTimeout(() => {
                 if (!playerHover && playerMinimizado) {
                   player.classList.add("minimized");
@@ -3579,12 +3615,16 @@
           });
         }
 
+        // Configurar volume inicial
         if (audio) {
           audio.volume = 0.5;
           if (document.getElementById("volume-slider")) {
             document.getElementById("volume-slider").value = 50;
           }
         }
+
+        // Carregar primeira música (sem tocar)
+        setTimeout(iniciarMusicaAutomaticamente, 1000);
       });
 
       // ================ SISTEMA DO QUIZ ================
